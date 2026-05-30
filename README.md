@@ -17,7 +17,7 @@ Database Used: MongoDB Atlas
 8. Help Page to understand how to use this website and see the Privacy Policy and Terms of Service of this website
 9. Users can copy the generated clipboard ID and the retreived content to the clipboard in the computer
 10. Users an download the retreived content as a text file (.txt file)
-11. Welcome Page and a Page Not Found Page
+11. Welcome Page and a Page Not Found Page is also present
 
 # Versions:
 *Ver 1.0.0*: It is the basic version of the program that contains all the above features. But user has to calculate the TTL in seconds and enter it.
