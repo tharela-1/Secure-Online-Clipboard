@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Secure Online Clipboard</title>
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+<body>
+    <div class="head">
+        <span class="title">Secure Online Clipboard - Feedback Page</span>
+        <div style="display: flex; justify-content: flex-end">
+            <button class="tools" id="help" onclick="window.location.href='/home';">Back</button>
+        </div>
+    </div>
+    <marquee style="font-family: monospace; font-size: 17px;">Welcome to the Secure Online 
+        Clipboard website.
+        By using this website, <b>you agree to the <a href="/help">Privacy Policy</a> and the 
+        <a href="/help">Terms of Service</a></b> of this website. 
+        See the <b><a href="/help">Help Page</a></b> for more details. 
+        Your feedback is very valuable. 
+        Give your valuable feedback to help this website to work even better 
+        in the <a href="/feedback">Feedback Page</a>.
+    </marquee>
+    <marquee style="font-family: monospace; font-size: 17px;">The fields marked with <span style="color: red">*</span> 
+        are required fields in their respective section. I hope that this website would be very helpful 
+        for you. Thanks for using the website! 
+        Don't forget to post your valuable feedback to the developer!</a>. 
+    </marquee>
+    <hr class="line">
+    <div class = "container2">
+        <form method="POST" onsubmit="sendFeedback(event)">
+            <label class="listObj" for="feedback">Enter the feedback that you would like to 
+                give (max 1000 characters)<span style="color: red">*</span></label>
+            <br><br>
+            <textarea required name="feedback" class="longListObj"
+                rows="15" cols="88" maxlength="1000"
+                oninput= "if(this.value.length>1000){this.value = this.value.slice(0,1000)}"
+                placeholder="Enter Text here..." id="feedback"></textarea>
+            <br>
+            <button class="actionObj" id="feedback-button">Send Feedback</button>
+        </form>
+        <br>
+        <span class="heading">By using this website you agree to the 
+            Terms of Service and Privacy Policy of it.</span>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

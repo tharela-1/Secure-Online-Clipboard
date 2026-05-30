@@ -1,0 +1,158 @@
+body, span, h1, h2, h3, h4, h5, h6, p, ul, ol{
+    line-height: 1.5;
+}
+
+body{
+    font-family: monospace;
+    .title{
+        font-size: 24px;
+        font-family: monospace;
+        padding: 10px;
+    }
+    .tools{
+        font-size: 18px;
+        padding: 10px;
+        margin: 10px;
+        font-family: monospace;
+        height: 65px;
+        width: 100px;
+        text-decoration: none;
+        color: black;
+    }
+    .head{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .listObj{
+        font-size: 14px;
+        font-family: monospace;
+        margin: 5px;
+        height: 25px;
+        width: 90%;
+    }
+    .field{
+        border: 1px solid black;
+        max-width: 50%;
+        margin: 5px;
+        flex: 1;
+        padding: 5px;
+    }
+    .container{
+        display: flex;
+        flex-direction: column;
+    }
+    .actionObj{
+        padding: 5px;
+        margin: 10px;
+        font-family: monospace;
+        font-size: 14px; 
+    }
+    .longListObj{
+        font-size: 14px;
+        font-family: monospace;
+        margin: 5px;
+        color: blue;
+        max-width: 90%
+    }
+    textarea{
+        resize: none;
+    }
+    .heading{
+        font-family: monospace;
+        font-size: 16px;
+        margin-left: 5px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    
+    #reset1:hover{
+        background-color: red;
+        color: white;
+    }
+    #reset2:hover{
+        background-color: red;
+        color: white;
+    }
+    #send1:hover{
+        background-color: green;
+        color: white;
+    }
+    #retreive1:hover{
+        background-color: green;
+        color: white;
+    }
+    #copy1:hover{
+        background-color: yellow;
+    }
+    #copy2:hover{
+        background-color: yellow;
+    }
+    #feedback1:hover{
+        background-color: lightblue;
+    }
+    #feedback-button:hover{
+        background-color: green;
+        color: white;
+    }
+    #sendCode{
+        color: green;
+    }
+    .welcomeText{
+        font-family: monospace;
+        font-size: 16px;
+    }
+    .introClass{
+        font-family: monospace;
+        font-size: 16px;
+        text-decoration: none;
+        color: black;
+    }
+    #startAction:hover{
+        background-color: green;
+        color: white;
+    }
+    #feedbackPage:hover{
+        background-color: orangered;
+        color: white;
+    }
+    #helpPage:hover{
+        background-color: yellow;
+    }
+    #welcome1:hover{
+        background-color: lightblue;
+    }
+    #mainPage:hover{
+        background-color: magenta;
+    }
+    #feedback1{
+        font-size: 16px;
+        font-family: monospace;
+    }
+    #welcome1{
+        font-size: 16px;
+        font-family: monospace;
+    }
+    #feedbackPage{
+        font-size:16px;
+    }
+    #helpPage{
+        font-size:16px;
+    }
+    #startAction{
+        font-size: 16px;
+    }
+    #mainPage{
+        font-size: 16px;
+    }
+    #write1:hover{
+        background-color: blue;
+        color: white;
+    }
+    /*Media query to adjust the items in the box items*/
+    @media (min-width: 768px){
+        .container{
+            flex-direction: row;
+        }
+    }
+}

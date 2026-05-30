@@ -1,0 +1,14 @@
+{
+  "name": "secure_online_clipboard",
+  "version": "1.0.0",
+  "description": "",
+  "license": "UNLICENSED",
+  "author": "Tharakeshvar Elavarasu",
+  "type": "commonjs",
+  "main": "script.js",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.4.2",
+    "mongodb": "^7.2.0"
+  }
+}

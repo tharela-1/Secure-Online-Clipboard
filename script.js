@@ -1,0 +1,152 @@
+// Event Listener function code to display live character count in a textarea
+const sendContent = document.getElementById('sendContent');
+const charCount = document.getElementById('charCount');
+
+sendContent.addEventListener('input', () => {
+    if(sendContent.value.length<1000){
+        charCount.innerHTML = "<span class='listObj'>" + sendContent.value.length + " / 1000 characters</span>";
+    }
+    else{
+        charCount.innerHTML = "<b><span class='listObj' style='color: red'>" + sendContent.value.length + " / 1000 characters</span></b>";
+    }
+})
+
+// Function for 'Copy Text' and 'Copy Code' buttons to copy text in the output text area to clipboard
+async function copyFn(){
+    let op = document.getElementById("output")
+    let val = op.value
+    try{
+        await navigator.clipboard.writeText(val)
+        alert("Text copied to clipboard successfully.")
+    }
+    catch(err){
+        alert("Failed to copy:"+err)
+    }
+}
+async function copyFn2(){
+    let op = document.getElementById("sendCode")
+    let val = op.value
+    try{
+        await navigator.clipboard.writeText(val)
+        alert("Send Code copied to clipboard successfully.")
+    }
+    catch(err){
+        alert("Failed to copy:"+err)
+    }
+}
+// Send Feedback to the developer -- Feedback Page Interface with Node.js
+async function sendFeedback(event){
+    event.preventDefault();
+
+    const fdb = document.getElementById('feedback')
+    let value = fdb.value
+    
+    const response = await fetch('/sendFeedback', {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: `feedback=${value}`
+    })
+    if(response.ok){
+        alert("Feedback sent successfully! Thank you for your valuable feedback!")
+        fdb.value = ""
+    }
+}
+
+// Send Clipboard Content -- Home Page Sender Section interface with Node.js
+async function sendClipBoard(event){
+    event.preventDefault();
+    const content = document.getElementById("sendContent").value
+    const pwd = document.getElementById("sendPassword").value
+    const ttl = document.getElementById("sendTTL").value
+    const rkt = document.getElementById("readKTimes").value
+    const wpkt = document.getElementById("passwordKTimes").value
+
+    // Prevents empty string and the string containing only whitespaces to be sent
+    if(content.trim()===""){
+        alert("There is no content to be sent.\
+\nThe content that you are trying to send may be empty or it may contain \
+only white spaces.")
+    }
+    else{
+        const response = await fetch('/sendClipboard', {
+            method: "POST",
+            headers: {
+                "Content-Type":"application/x-www-form-urlencoded"
+            },
+            body: `Content=${content}&maxReadCount=${rkt}&expireSeconds=${ttl}&maxWrongPwdCount=${wpkt}&password=${pwd}`
+        })
+        const sCode = document.getElementById("sendCode")
+        sCode.value = await response.text()
+
+        if(response.ok){
+            alert("Data sent successfully!!!\nThank you for using this website!")
+        }
+    }
+}
+// Retrieve Clipboard Content -- Home Page Receiver Section interface with Node.js
+
+async function retreiveClipBoard(event){
+    event.preventDefault();
+    const clipID = Number(document.getElementById("clipID").value)
+    const clipPass = document.getElementById("clipPass").value
+
+    const response = await fetch('/retreiveClipboard', {
+        method: "POST",
+        headers: {
+            "Content-Type":"application/x-www-form-urlencoded"
+        },
+        body: `clipID=${clipID}&clipPass=${clipPass}`
+    })
+
+    const resText = document.getElementById("output")
+    let textVal = await response.text()
+    if(textVal===""){
+        alert("Clipboard ID or password may be invalid or the Clipboard \
+you are searching for might have got expired or the maximum read count \
+or the maximum wrong password count of the clipboard with \
+that ID might have been reached.\n\
+Otherwise there might be an issue from the developer's side as well. \
+If you feel that the clipBoard ID and password \
+that you entered is correct and the clipboard with that ID still \
+has time before getting expired and the maximum read count \
+and the maximum wrong password count has not been reached, then \
+please let the developer know it by \
+sending the issue in the feedback page of this website.\n\
+Sorry for the inconvinience!!!\n\
+Thank you!!!")
+        resText.value = ""
+    }
+    else{
+        resText.value = textVal
+    }
+}
+
+function downloadTxtFile(){
+    const contentVal = document.getElementById('output').value
+    if(contentVal.trim()===""){
+        alert("There is no content to download to file.")
+    }
+    else{
+        // Create a Blob class object | Blob --> Binary Large Object
+        const blob = new Blob([contentVal], {type: 'text/plain'})
+        // Create an anchor tag
+        const tempLink = document.createElement('a')
+        // Create a url from the blob
+        const url = window.URL.createObjectURL(blob)
+        // add href and download parameter to the anchor tag
+        tempLink.href = url
+        tempLink.download = "clipboardContent.txt"
+        // add anchor tag to DOM
+        document.body.appendChild(tempLink)
+        // click the link
+        tempLink.click()
+        // remove anchor tag from the DOM
+        document.body.removeChild(tempLink)
+        // delete the URL
+        URL.revokeObjectURL(url)
+        // alert the user
+        alert("File has been downloaded successfully.")
+    }
+}

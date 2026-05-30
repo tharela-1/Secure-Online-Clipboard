@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Secure Online Clipboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="head">
+        <span class="title">Secure Online Clipboard - Home Page - Clipboard Page</span>
+        <div style="display: flex; justify-content: flex-end">
+            <button class="tools" id="help" onclick="window.location.href='/help';">Help</button>
+        </div>
+    </div>
+    <marquee style="font-family: monospace; font-size: 17px;">Welcome to the Secure Online 
+        Clipboard website.
+        By using this website, <b>you agree to the <a href="/help">Privacy Policy</a> and the 
+        <a href="/help">Terms of Service</a></b> of this website. 
+        See the <b><a href="/help">Help Page</a></b> for more details. 
+        Your feedback is very valuable. 
+        Give your valuable feedback to help this website to work even better 
+        in the <a href="/feedback">Feedback Page</a>.
+    </marquee>
+    <marquee style="font-family: monospace; font-size: 17px;">
+        The fields marked with <span style="color: red">*</span> 
+        are required fields in their respective section. You need to fill all the required 
+        fields in the respective section 
+        and press the corresponding button. For sender side enter all the required values 
+        in the sender section 
+        and for the receiver, enter all the values in the receiver section. I hope that 
+        this website would be very helpful 
+        for you. Thanks for using the website! Don't forget to post your valuable feedback to the developer! 
+        Send it by clicking on the link on the page or <a href="/feedback">here</a>. 
+    </marquee>
+    <hr class="line">
+    <div class="container">
+        <div class="field">
+            <span class="heading">Sender Section:</span>
+            <br><br>
+            <form method = "POST" onsubmit = "sendClipBoard(event)">
+                <label for="sendText" class = "listObj">Enter the text that has to be sent(max 1000 characters)
+                    <span style="color: red">*</span></label>
+                <br>
+                <textarea required name="sendText" 
+                class = "longListObj" rows="11" cols="88" maxlength="1000"
+                oninput= "if(this.value.length>1000){this.value = this.value.slice(0,1000)}"
+                placeholder="Enter Text here..." id="sendContent"></textarea>
+                <br>
+                <div id="charCount" align="right"></div>
+                <br>
+                <label for="sendPass" class = "listObj">
+                    Enter the Sender's Passcode(max 15 characters)
+                    <span style="color: red">*</span>
+                </label>
+                <br>
+                <input required name="sendPass" class="listObj" type="password" maxlength="15" 
+                oninput= "if(this.value.length>15){this.value = this.value.slice(0,15)}" 
+                placeholder="Enter the password..." id="sendPassword">
+                <br>
+                <label for="Timer" class="listObj">How long do you want the message to be accessible? 
+                    The max allowed time is 24 hours(86400 seconds)
+                    <span style="color: red">*</span></label>
+                <br>
+                <input type="number" class="listObj" min="0" max="86400" required
+                oninput="if(this.value>=86400){this.value=86400}else if(this.value<=0){this.value=0}else{this.value = Math.round(this.value)}"
+                placeholder="Enter the Time To Live(TTL)..." step="1" id="sendTTL">
+                <br><br>
+                <span class="heading">Extra Privacy features:</span>
+                <br><br>
+                <label for="readkTimes" class="listObj">Make the message sent retrievable only for how many times?(max 2049) 
+                    If you don't want to set this then enter the value as 0.
+                    <span style="color: red">*</span></label>
+                <input type="number" min="0" max="2049" name="readkTimes" class="listObj" 
+                required step="1" placeholder="Enter how many times..."
+                oninput="if(this.value>=2049){this.value=2049}else if(this.value<=0){this.value=0}
+                else{this.value = Math.round(this.value)}" id="readKTimes">
+                <br>
+                <label for="deleteDoc" class="listObj">Delete the document in the database 
+                    after how many wrong password attempts?(max 100) If you don't want to set this then enter the value as 0.
+                    <span style="color: red">*</span></label>
+                <input type="number" min = "0" max = "100" name="deleteDoc" class="listObj" required
+                oninput="if(this.value>=100){this.value=100}else if(this.value<=0){this.value=0}
+                else{this.value = Math.round(this.value)}" step="1"
+                placeholder="Enter how many times..." id = "passwordKTimes">
+                <br>
+                <button class="actionObj" id="send1">Send Text</button>
+                <input type="reset" class="actionObj" id="reset1">
+                <br><br>
+                <hr class="line">
+                <br>
+                <label for="sendCode" class="listObj">Your send code(clipboard ID) is:</label>
+                <br>
+                <input type="number" class="listObj" 
+                placeholder="Your send code will be shown here..."
+                readonly id="sendCode">
+            </form>
+            <button onclick = "copyFn2()" class="actionObj" id="copy2">Copy Code</button>
+        </div>
+        <div class="field">
+            <span class="heading">Receiver Section:</span>
+            <br><br>
+            <form method="POST" onsubmit="retreiveClipBoard(event)">
+                <label for="retCode" class = "listObj">Enter the clipboard ID
+                    <span style="color: red">*</span></label>
+                <br>
+                <input name="retCode" type="number" required 
+                placeholder="Enter the code..." class="listObj" id="clipID"></input>
+                <br>
+                <label for="retPass" class = "listObj">Enter the retrieval password(max 15 characters)
+                    <span style="color: red">*</span></label>
+                <br>
+                <input name="retPass" type="password" required 
+                placeholder="Enter the password..." class="listObj" 
+                oninput= "if(this.value.length>15){this.value = this.value.slice(0,15)}"
+                id="clipPass">
+                </input>
+                <br>
+                <button class="actionObj" id="retreive1">Retrieve Text</button>
+                <input type="reset" class="actionObj" id="reset2">
+                <br>
+                <label for="resultObj" class="listObj">Retrieved Text:</label>
+                <br>
+                <textarea rows="11" cols="88" name="resultObj" readonly 
+                    placeholder="Your retrieved text will be shown here..." 
+                    class = "longListObj" id="output">
+                </textarea>
+            </form>
+            <button onclick = "copyFn()" class="actionObj" id="copy1">Copy Text</button>
+            <button onclick = "downloadTxtFile()" class="actionObj" id="write1">
+                Download as a Text File(.txt)</button>
+            <br>
+            <span class="heading">Send Feedback to the developer:</span>
+            <button class="actionObj" id="feedback1" onclick="window.location.href='/feedback';">Send Feedback</button>
+            <br>
+            <span class="heading">Go back to the Welcome Page:</span>
+            <button class="actionObj" id="welcome1" onclick="window.location.href='/welcome';">Welcome Page</button>
+            <br><br>
+            <span class="heading">By using this website you agree to the 
+                <a href="/help">Privacy Policy</a> and the <a href="/help">Terms of Service</a> 
+                of it.</span>
+            <br><br>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
