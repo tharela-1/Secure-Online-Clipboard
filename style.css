@@ -33,7 +33,7 @@ body{
     }
     .field{
         border: 1px solid black;
-        max-width: 50%;
+        max-width: 49%;
         margin: 5px;
         flex: 1;
         padding: 5px;
@@ -148,6 +148,24 @@ body{
     #write1:hover{
         background-color: blue;
         color: white;
+    }
+    .ttlObj{
+        font-size: 14px;
+        font-family: monospace;
+        margin: 5px;
+        height: 25px;
+        width: 90%;
+    }
+    .separator{
+        font-family: monospace;
+        font-size: 20px;
+        margin-left: 10px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        margin-right:10px;
+    }
+    .indent1{
+        margin-left: 32px;
     }
     /*Media query to adjust the items in the box items*/
     @media (min-width: 768px){

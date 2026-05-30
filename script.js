@@ -3,11 +3,11 @@ const sendContent = document.getElementById('sendContent');
 const charCount = document.getElementById('charCount');
 
 sendContent.addEventListener('input', () => {
-    if(sendContent.value.length<1000){
-        charCount.innerHTML = "<span class='listObj'>" + sendContent.value.length + " / 1000 characters</span>";
+    if(sendContent.value.length<2500){
+        charCount.innerHTML = "<span class='listObj'>" + sendContent.value.length + " / 2500 characters</span>";
     }
     else{
-        charCount.innerHTML = "<b><span class='listObj' style='color: red'>" + sendContent.value.length + " / 1000 characters</span></b>";
+        charCount.innerHTML = "<b><span class='listObj' style='color: red'>" + sendContent.value.length + " / 2500 characters</span></b>";
     }
 })
 
@@ -59,10 +59,14 @@ async function sendClipBoard(event){
     event.preventDefault();
     const content = document.getElementById("sendContent").value
     const pwd = document.getElementById("sendPassword").value
-    const ttl = document.getElementById("sendTTL").value
+    const ttlh = document.getElementById("sendTTLHours").value
+    const ttlm = document.getElementById("sendTTLMinutes").value
+    const ttls = document.getElementById("sendTTLSeconds").value
     const rkt = document.getElementById("readKTimes").value
     const wpkt = document.getElementById("passwordKTimes").value
 
+    const ttl = String(Number(ttlh)*3600  + Number(ttlm) * 60 + Number(ttls))
+    
     // Prevents empty string and the string containing only whitespaces to be sent
     if(content.trim()===""){
         alert("There is no content to be sent.\
@@ -103,6 +107,7 @@ async function retreiveClipBoard(event){
     const resText = document.getElementById("output")
     let textVal = await response.text()
     if(textVal===""){
+        resText.value = ""
         alert("Clipboard ID or password may be invalid or the Clipboard \
 you are searching for might have got expired or the maximum read count \
 or the maximum wrong password count of the clipboard with \
@@ -116,7 +121,6 @@ please let the developer know it by \
 sending the issue in the feedback page of this website.\n\
 Sorry for the inconvinience!!!\n\
 Thank you!!!")
-        resText.value = ""
     }
     else{
         resText.value = textVal
