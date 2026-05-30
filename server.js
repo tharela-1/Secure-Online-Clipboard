@@ -274,7 +274,7 @@ async function connectDB(){
                 res.writeHead(404, {"content-type": 'text/html'})
                 fs.createReadStream('./pageNotFound.html').pipe(res)
             }
-        }).listen(process.env.PORT, 'localhost', ()=>{
+        }).listen(process.env.PORT, '0.0.0.0', ()=>{
             console.log("Server is listening")
         })
     }
