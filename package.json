@@ -2,7 +2,7 @@
   "name": "secure_online_clipboard",
   "version": "1.0.1",
   "description": "",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "author": "Tharakeshvar Elavarasu",
   "type": "commonjs",
   "main": "server.js",
