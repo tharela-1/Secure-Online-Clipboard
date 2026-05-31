@@ -20,5 +20,5 @@ Database Used: MongoDB Atlas
 11. Welcome Page and a Page Not Found Page is also present
 
 # Versions:
-*Ver 1.0.0*: It is the basic version of the program that contains all the above features. But user has to calculate the TTL in seconds and enter it.
-*Ver 1.0.1*: The issue of user calculating the time needed and entering it in seconds has been resolved by letting the user to enter the required hours, minutes and seconds and calculate the time in seconds from that
+*Ver 1.0.0*: It is the basic version of the program that contains all the above features. But user has to calculate the TTL in seconds and enter it. Users can enter upto 1000 characters per clipboard  
+*Ver 1.0.1*: The issue of user calculating the time needed and entering it in seconds has been resolved by letting the user to enter the required hours, minutes and seconds and the time in seconds has been calculated from that by the website itself. The character limit per clipboard has been increased from 1000 to 2500.
