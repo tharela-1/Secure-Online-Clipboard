@@ -133,6 +133,14 @@ body{
         font-size: 16px;
         font-family: monospace;
     }
+    #code1{
+        font-size: 16px;
+        font-family: monospace;
+    }
+    #code1:hover{
+        background-color: purple;
+        color: white;
+    }
     #feedbackPage{
         font-size:16px;
     }
