@@ -40,7 +40,7 @@ body{
     }
     .container{
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
     }
     .actionObj{
         padding: 5px;
@@ -175,10 +175,66 @@ body{
     .indent1{
         margin-left: 32px;
     }
+    /*Button animations
+    1. Use the transform : scale(x) to get the size of the button to the x*100% size of the original size.
+    2. Use opacity to set how light or solid the button is when pressed. 0 -> Light 1 -> Solid*/
+    .actionObj:active{
+        transform: scale(0.97);
+        opacity: 0.95;
+    }
+    .tools:active{
+        transform: scale(0.97);
+        opacity: 0.95;
+    }
+    .tools:hover{
+        transform: scale(1.03);
+    }
+    .actionObj:hover{
+        transform: scale(1.03);
+    }
+    button{
+        transition: transform 0.25s ease;
+    }
+    .secHead{
+        font-family: monospace;
+        font-size: 16px;
+        margin-left: 5px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    .divSecHead{
+        text-align: center;
+    }
+    #sendPassword{
+        font-size: 14px;
+        font-family: monospace;
+        margin: 5px;
+        height: 25px;
+        width: 70%;
+    }
+    #clipPass{
+        font-size: 14px;
+        font-family: monospace;
+        margin: 5px;
+        height: 25px;
+        width: 70%;
+    }
+    #showPwd1:hover{
+        background-color: orangered;
+        color: white;
+    }
+    #showPwd2:hover{
+        background-color: orangered;
+        color: white;
+    }
+    /*Disables the password view eye symbol from Microsoft Edge and Internet Explorer*/
+    input::-ms-reveal{
+        display: none;
+    }
     /*Media query to adjust the items in the box items*/
-    @media (min-width: 768px){
+    @media (max-width: 768px){
         .container{
-            flex-direction: row;
+            flex-direction: column;
         }
     }
 }

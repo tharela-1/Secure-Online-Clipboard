@@ -17,7 +17,12 @@ async function copyFn(){
     let val = op.value
     try{
         await navigator.clipboard.writeText(val)
-        alert("Text copied to clipboard successfully.")
+        let button = document.getElementById('copy1')
+        button.textContent = "Copied!"
+
+        setTimeout( () => {
+            button.textContent = "Copy Text"
+        }, 2500)
     }
     catch(err){
         alert("Failed to copy:"+err)
@@ -28,7 +33,12 @@ async function copyFn2(){
     let val = op.value
     try{
         await navigator.clipboard.writeText(val)
-        alert("Send Code copied to clipboard successfully.")
+        let button = document.getElementById('copy2')
+        button.textContent = "Copied!"
+
+        setTimeout( () => {
+            button.textContent = "Copy Text"
+        }, 2500)
     }
     catch(err){
         alert("Failed to copy:"+err)
@@ -153,4 +163,47 @@ function downloadTxtFile(){
         // alert the user
         alert("File has been downloaded successfully.")
     }
+}
+
+// Password show and hide logic
+/* Logic Used:
+        Step - 1: Button is pressed
+        Step - 2: Type of input field is changed
+        Step - 3: Text of button is changed to "See Now"
+        Step - 4: Input field of password entering is disabled while viewing
+        Step - 5: After 5.5 seconds i.e., 5500 ms all are back to normal state
+*/
+
+function showPassword1(){
+    let button = document.getElementById("showPwd1")
+    let sendPwd = document.getElementById("sendPassword")
+
+    if(button.textContent === "See Now"){
+        return
+    }
+    sendPwd.type = "text"
+    button.textContent = "See Now"
+    sendPwd.disabled = true;
+    setTimeout( ()=> {
+        sendPwd.type = "password"
+        button.textContent = "Show Password"
+        sendPwd.disabled = false;
+    }, 5500)
+}
+
+function showPassword2(){
+    let button = document.getElementById("showPwd2")
+    let sendPwd = document.getElementById("clipPass")
+
+    if(button.textContent === "See Now"){
+        return
+    }
+    clipPass.type = "text"
+    button.textContent = "See Now"
+    clipPass.disabled = true;
+    setTimeout( ()=> {
+        clipPass.type = "password"
+        button.textContent = "Show Password"
+        clipPass.disabled = false;
+    }, 5500)
 }
