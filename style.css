@@ -33,7 +33,6 @@ body{
     }
     .field{
         border: 1px solid black;
-        /*max-width: 49%;*/
         width: 97%;
         margin: 5px;
         flex: 1;
