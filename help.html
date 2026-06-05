@@ -60,11 +60,22 @@
             as well by doing the following:
             <ul>
                 <li>If you want to create a restriction to access the clipboard contents 
-                    only for a specific number of times then
-                    you can enter that value in the input field otherwise enter 0.</li>
+                    only for a specific number of times i.e., setting a read count limit then
+                    you can enter that value in the input field, If you 
+                    dont want to set this, then enter 0.</li>
                 <li>If you want to delete the record in the database after specific number 
                     of wrong password attempts then 
-                    enter that value in the input field otherwise enter 0.</li>
+                    enter that value in the input field. If you don't want to set this, then enter 0.
+                    <br>
+                    <b>NOTE: The count of wrong password attempts is done cumulatively i.e.,
+                        From the start of the clipboard, till the end how many wrong password attempts
+                        has been made. It is not count of continuous wrong password attempts.
+                        <br>
+                        For example: Let's take C means user has entered the correct password and 
+                        W means user has entered the wrong password.
+                        <br>
+                        Then if the accessing order is W W C W W W C, it is counted as 5 wrong password attempts.
+                    </b></li>
             </ul>
         </li>
         <li>Step - 4: Press the Send Text button</li>
