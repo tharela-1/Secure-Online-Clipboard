@@ -111,7 +111,7 @@ async function retreiveClipBoard(event){
         headers: {
             "Content-Type":"application/x-www-form-urlencoded"
         },
-        body: `clipID=${clipID}&clipPass=${clipPass}`
+        body: `clipID=${clipID}&clipPass=${encodeURIComponent(clipPass)}`
     })
 
     const resText = document.getElementById("output")
