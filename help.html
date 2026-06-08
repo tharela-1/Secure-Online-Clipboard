@@ -1,189 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="style.css">
-    <script src="script.js"></script>
-    <title>Secure Online Clipboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="main">
     <div class="head">
-        <span class="title">Secure Online Clipboard - Help Page</span>
+        <span class="title">URL Shortener - Help Page</span>
         <div style="display: flex; justify-content: flex-end">
-            <button class="tools" id="help" onclick="window.location.href='/home';">Back</button>        
+            <button class="tools" id="home" onclick="window.location.href='/home';">Back</button>
         </div>
     </div>
-    <marquee style="font-family: monospace; font-size: 17px;">Welcome to the Secure Online 
-        Clipboard website.
-        By using this website, <b>you agree to the <a href="/help">Privacy Policy</a>, the 
-        <a href="/help">Terms of Service</a> and the <a href="/help">License Terms</a></b> of this website. 
-        See the <b><a href="/help">Help Page</a></b> for more details. 
-        Your feedback is very valuable. 
-        Give your valuable feedback to help this website to work even better 
-        in the <a href="/feedback">Feedback Page</a>.
-    </marquee>
     <hr class="line">
     <span class="heading">How to use this website?</span>
-    <ul style="font-family: monospace; font-size: 16px">
-        <li>Step - 1: Type the text that you need to send to the receiver</li>
-        <li>Step - 2: Type the password for the message</li>
-        <li>Step - 3: Set the Time To Live(TTL) value i.e., for how long 
-            the message should be accessible
+    <br>
+    <ul class="heading">
+        <li>Step - 1: Enter the actual URL</li>
+        <li>Step - 2: Set how long you want the link to be active. 
+            Note that all the fields: Days, Hours, Minutes, Seconds are required fields.
             <br>
-            <div class="indent1">
-            For example:
-                    <br>
-                    1. If you need to set the time as 12 hours 31 minutes 58 seconds 
-                    then enter the following values:
-                    12 in the hours box 31 in the minutes box and 58 in the seconds box.
-                    <br>
-                    2. If you need to set the time as 12 hours then enter the following values:
-                    12 in the hours box and 0 in the minutes box and 0 in the seconds box
-                    <br>
-                    3. If you need to set the time as 11 hours 45 minutes then enter the following values:
-                    11 in the hours box 45 in the minutes box and 0 in the seconds box
-                    <br>
-                    4. If you need to set the time as 11 hours 45 seconds then enter the following values:
-                    11 in the hours box 0 in the minutes box and 45 in the seconds box
-                    <br>
-                    5. If you need to set the time as 25 minutes 45 seconds then enter the following values:
-                    0 in the hours box 25 in the minutes box and 45 in the seconds box
-                    <br>
-                    6. If you need to set the time as 35 minutes then enter the following values:
-                    0 in the hours box 35 in the minutes box and 0 in the seconds box
-                    <br>
-                    7. If you need to set the time as 45 seconds then enter the following values:
-                    0 in the hours box 0 in the minutes box and 45 in the seconds box
-            </div>
+            For example: 
+            <ol>
+                <li>6 days 4 hours 5 minutes 2 seconds can be given as - 6 in the days box,
+                    4 in the hours box, 5 in the minutes box and 2 in the seconds box.</li>
+                <li>6 days 10 minutes 2 seconds can be given as - 6 in the days box,
+                    0 in the hours box, 5 in the minutes box and 2 in the seconds box.</li>
+            </ol>
+            and similarly for all other cases also.
         </li>
-        <li>If you want to opt for the extra privacy features, you can do that 
-            as well by doing the following:
-            <ul>
-                <li>If you want to create a restriction to access the clipboard contents 
-                    only for a specific number of times i.e., setting a read count limit then
-                    you can enter that value in the input field, If you 
-                    dont want to set this, then enter 0.</li>
-                <li>If you want to delete the record in the database after specific number 
-                    of wrong password attempts then 
-                    enter that value in the input field. If you don't want to set this, then enter 0.
-                    <br>
-                    <b>NOTE: The count of wrong password attempts is done cumulatively i.e.,
-                        From the start of the clipboard, till the end how many wrong password attempts
-                        has been made. It is not count of continuous wrong password attempts.
-                        <br>
-                        For example: Let's take C means user has entered the correct password and 
-                        W means user has entered the wrong password.
-                        <br>
-                        Then if the accessing order is W W C W W W C, it is counted as 5 wrong password attempts.
-                    </b></li>
-            </ul>
-        </li>
-        <li>Step - 4: Press the Send Text button</li>
-        <li>Step - 5: Note down the clipboard code generated and password that you have 
-            entered, because those data 
-            are very important for retrieval of text.</li>
-        <li>Step - 6: To retrieve the text, enter the clipboard ID and the password 
-            and press the Retrieve Text button.</li>
-        <li>Step - 7: You will see the retrieved text in the text area.</li>
+        <li>Step - 3: Press the <b>Generate Short URL</b> button and get the shortened URL in the below box</li>
     </ul>
-    <span class="heading">Points to note:</span>
-    <ul style="font-family: monospace; font-size: 16px">
-        <li>To reset the form you an press the reset button in the respective section 
-            to reset that particular section.</li>
-        <li>If the clipboard ID or password is lost, 
-            there is no way of retrieving that.</li>
-        <li>You can send feedback to the developer by clicking the 
-            Send Feedback button in the Home Page. It would take you to the 
-            Feedback page where you can enter the feedback.</li>
-        <li>Ensure that you have filled all the required fields in the Section - I and Section - II of the Sender
-            Section before you press the Send Text button.</li>
-        <li>If you press the Show Password button then the text of the button changes 
-            from Show Password to See Now and you can see
-            the password that you have typed for 5.5 seconds. During the view time, you can't
-            edit the password that you have entered in the password field. After that the text of the button
-            changes back to Show Password. Then you can edit the password that you have entered in the 
-            password field.
-            When the text of the button in the sender section's password 
-            field has the text Show Password at that time you can type / edit the password
-            entered in the password field in the sender section. When the 
-            text of the button in the sender section's password field is See Now, you can't edit
-            the password that you have entered in the password field in the sender section.</li>
-
-        <li>If you press the Show Password button then the text of the button changes 
-            from Show Password to See Now and you can see
-            the password that you have typed for 5.5 seconds. During the view time, you can't
-            edit the password that you have entered in the password field. After that the text of the button
-            changes back to Show Password. Then you can edit the password that you have entered in the 
-            password field.
-            When the text of the button in the receiver section's password 
-            field has the text Show Password at that time you can type / edit the password
-            entered in the password field in the receiver section. When the 
-            text of the button in the receiver section's password field is See Now, you can't edit
-            the password that you have entered in the password field in the receiver section.</li>
-    </ul>
-    <br>
-    <span class="heading">By using this website you agree to 
-        the Privacy Policy, Terms of Service and the License Terms of it. Thank you for using this website!</span>
-    </div>
-    <br><br>
     <hr class="line">
     <div class="head">
-        <span class="title">Secure Online Clipboard - Privacy Policy</span>
+        <span class="title">URL Shortener - Privacy Policy</span>
     </div>
     <hr class="line">
-    <br>
-    <span class="heading">Check out our website's privacy policy given below:</span>
-    <br><br>
-    <span class="heading">We use secure storage practices like hashing and encryption techniques 
-        to protect the content that you share through this clipboard.
-        <br><br>
-        <b>NOTE: USERS ARE ADVISED NOT TO STORE OR SHARE ANY HIGHLY SENSITIVE INFORMATION, PERSONAL
-            INFORMATION, PASSWORDS, FINANCIAL INFORMATION.
-        </b>
-        <br><br>
-        <b>NOTE: BY USING THIS WEBSITE YOU AGREE THAT YOU ARE SOLELY RESPONSIBLE
-            FOR THE DATA THAT YOU SEND THROUGH THIS WEBSITE. EVEN THOUGH THE SECURITY
-            MEASURES ARE IMPLEMENTED, THE DEVELOPER CANNOT GUARANTEE ABSOLUTE
-            SECURITY FOR ALL THE USER SUBMITTED CONTENT.
-        </b>
-        <br><br>
-        By using this website you agree to the Privacy Policy of this website.
-        <br><br>
-        <b>WE RESERVE THE RIGHT TO UPDATE THE PRIVACY POLICY OF THIS WEBSITE AT ANY TIME.</b>
-        <br><br>
-        Last Updated on: May 30, 2026
+    <span class="heading">We do not collect, store or share any personal data beyond what is 
+        required for this URL Shortener website to operate. We may log some 
+        basic, non identifiable details like how many times the link has been used to improve the 
+        performance of the website.
     </span>
     <br><br>
+    <span class="heading">WE RESERVE THE RIGHT TO UPDATE THE PRIVACY POLICY OF THIS WEBSITE 
+        AT ANY TIME.
+    </span>
+    <br>
+    <span class="heading">Last Updated: June 7, 2026</span>
     <hr class="line">
     <div class="head">
-        <span class="title">Secure Online Clipboard - Terms of Service</span>
+        <span class="title">URL Shortener - Terms of Service</span>
     </div>
     <hr class="line">
-    <br>
-    <span class="heading">Check out our website's Terms of Service given below:</span>
-    <br><br>
-    <span class="heading">The website is designed to provide a temporary secure
-        clipboard tool for educational and practical purposes. Also note that this 
-        website is not liable for any misuse.
-        <br><br>
-        <b>NOTE: BY USING THIS WEBSITE, THE USERS AGREE THAT THEY ARE SOLELY 
-            RESPONSIBLE FOR THE DATA THAT THEY STORE OR SHARE THROUGH THIS WEBSITE.
-        </b>
-        <br><br>
-        By using this website you agree to the Terms of Service of this website.
-        <br><br>
-        <b>WE RESERVE THE RIGHT TO UPDATE THE TERMS OF SERVICE OF THIS WEBSITE AT ANY TIME.</b>
-        <br><br>
-        Last Updated on: May 30, 2026
+    <span class="heading">
+        The service must be used only for genuine purposes and not for any spam, illegal content or malicious content.
+        We reserve the right to disable or remove such links that violate these terms without any prior notice.
     </span>
     <br><br>
+    <span class="heading">WE RESERVE THE RIGHT TO UPDATE THE TERMS OF SERVICE OF THIS WEBSITE 
+        AT ANY TIME.
+    </span>
+    <br>
+    <span class="heading">Last Updated: June 7, 2026</span>
     <hr class="line">
     <div class="head">
-        <span class="title">Secure Online Clipboard - License</span>
+        <span class="title">URL Shortener - License Terms</span>
     </div>
     <hr class="line">
-    <br>
     <pre><code>
 MIT License
 
@@ -206,6 +89,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
     </code></pre>
 </body>
 </html>
