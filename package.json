@@ -1,6 +1,29 @@
 {
+  "name": "secure_online_clipboard",
+  "version": "1.0.2",
+  "description": "This is a secure online clipboard application. This would be very helpful if we need to transfer the data from one device to another in a secure way and the data should not last permanently.",
+  "license": "MIT",
+  "author": "Tharakeshvar Elavarasu",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
   "dependencies": {
+    "bcrypt": "^6.0.0",
+    "bson": "^7.2.0",
     "dotenv": "^17.4.2",
-    "mongodb": "^7.2.0"
-  }
+    "memory-pager": "^1.5.0",
+    "mongodb": "^7.2.0",
+    "mongodb-connection-string-url": "^7.0.1",
+    "node-addon-api": "^8.8.0",
+    "node-gyp-build": "^4.8.4",
+    "punycode": "^2.3.1",
+    "sparse-bitfield": "^3.0.3",
+    "tr46": "^5.1.1",
+    "webidl-conversions": "^7.0.0",
+    "whatwg-url": "^14.2.0"
+  },
+  "devDependencies": {}
 }

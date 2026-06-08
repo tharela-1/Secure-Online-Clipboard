@@ -19,56 +19,219 @@ body{
         text-decoration: none;
         color: black;
     }
-    .inputObj{
-        resize: none;
-        font-family: monospace;
+    .head{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .listObj{
         font-size: 14px;
-        padding: 5px;
+        font-family: monospace;
         margin: 5px;
-        color:blue;
+        height: 25px;
         width: 90%;
     }
-    .actionObj{
-        font-family: monospace;
-        font-size: 14px;
-        padding: 5px;
-        margin: 5px;
-    }
     .field{
-        width:97%;
-        flex:1;
         border: 1px solid black;
+        width: 97%;
         margin: 5px;
+        flex: 1;
         padding: 5px;
     }
     .container{
         display: flex;
         flex-direction: row;
     }
+    .actionObj{
+        padding: 5px;
+        margin: 10px;
+        font-family: monospace;
+        font-size: 14px; 
+    }
+    .longListObj{
+        font-size: 14px;
+        font-family: monospace;
+        margin: 5px;
+        color: blue;
+        max-width: 90%
+    }
+    textarea{
+        resize: none;
+    }
     .heading{
         font-family: monospace;
         font-size: 16px;
+        margin-left: 5px;
+        margin-top: 10px;
+        margin-bottom: 10px;
     }
-    .head{
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+    
+    #reset1:hover{
+        background-color: red;
+        color: white;
+    }
+    #reset2:hover{
+        background-color: red;
+        color: white;
+    }
+    #send1:hover{
+        background-color: green;
+        color: white;
+    }
+    #retreive1:hover{
+        background-color: green;
+        color: white;
+    }
+    #copy1:hover{
+        background-color: yellow;
+    }
+    #copy2:hover{
+        background-color: yellow;
+    }
+    #feedback1:hover{
+        background-color: lightblue;
+    }
+    #feedback-button:hover{
+        background-color: green;
+        color: white;
+    }
+    #sendCode{
+        color: green;
+    }
+    .welcomeText{
+        font-family: monospace;
+        font-size: 16px;
+    }
+    .introClass{
+        font-family: monospace;
+        font-size: 16px;
+        text-decoration: none;
+        color: black;
+    }
+    #startAction:hover{
+        background-color: green;
+        color: white;
+    }
+    #feedbackPage:hover{
+        background-color: orangered;
+        color: white;
+    }
+    #helpPage:hover{
+        background-color: yellow;
+    }
+    #welcome1:hover{
+        background-color: lightblue;
+    }
+    #mainPage:hover{
+        background-color: magenta;
+    }
+    #feedback1{
+        font-size: 16px;
+        font-family: monospace;
+    }
+    #welcome1{
+        font-size: 16px;
+        font-family: monospace;
+    }
+    #code1{
+        font-size: 16px;
+        font-family: monospace;
+    }
+    #code1:hover{
+        background-color: purple;
+        color: white;
+    }
+    #feedbackPage{
+        font-size:16px;
+    }
+    #helpPage{
+        font-size:16px;
+    }
+    #startAction{
+        font-size: 16px;
+    }
+    #mainPage{
+        font-size: 16px;
+    }
+    #write1:hover{
+        background-color: blue;
+        color: white;
+    }
+    .ttlObj{
+        font-size: 14px;
+        font-family: monospace;
+        margin: 5px;
+        height: 25px;
+        width: 90%;
+    }
+    .separator{
+        font-family: monospace;
+        font-size: 20px;
+        margin-left: 10px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        margin-right:10px;
+    }
+    .indent1{
+        margin-left: 32px;
+    }
+    /*Button animations
+    1. Use the transform : scale(x) to get the size of the button to the x*100% size of the original size.
+    2. Use opacity to set how light or solid the button is when pressed. 0 -> Light 1 -> Solid*/
+    .actionObj:active{
+        transform: scale(0.97);
+        opacity: 0.95;
+    }
+    .tools:active{
+        transform: scale(0.97);
+        opacity: 0.95;
+    }
+    .tools:hover{
+        transform: scale(1.03);
+    }
+    .actionObj:hover{
+        transform: scale(1.03);
+    }
+    button{
+        transition: transform 0.25s ease;
     }
     .secHead{
         font-family: monospace;
         font-size: 16px;
+        margin-left: 5px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    .divSecHead{
         text-align: center;
     }
-    .entryObj{
-        resize: none;
-        font-family: monospace;
+    #sendPassword{
         font-size: 14px;
-        padding: 5px;
+        font-family: monospace;
         margin: 5px;
-        color:blue;
-        width: 90%;
+        height: 25px;
+        width: 70%;
     }
-    /*Media query - To fit the mobile view as well*/
+    #clipPass{
+        font-size: 14px;
+        font-family: monospace;
+        margin: 5px;
+        height: 25px;
+        width: 70%;
+    }
+    #showPwd1:hover{
+        background-color: orangered;
+        color: white;
+    }
+    #showPwd2:hover{
+        background-color: orangered;
+        color: white;
+    }
+    /*Disables the password view eye symbol from Microsoft Edge and Internet Explorer*/
+    input::-ms-reveal{
+        display: none;
+    }
+    /*Media query to adjust the items in the box items*/
     @media (max-width: 768px){
         .container{
             flex-direction: column;
