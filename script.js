@@ -78,7 +78,7 @@ async function sendClipBoard(event){
     const rkt = document.getElementById("readKTimes").value
     const wpkt = document.getElementById("passwordKTimes").value
 
-    const ttl = String(max(30, Number(ttlh)*3600  + Number(ttlm) * 60 + Number(ttls)))
+    const ttl = String(Math.max(30, Number(ttlh)*3600  + Number(ttlm) * 60 + Number(ttls)))
     
     // Prevents empty string and the string containing only whitespaces to be sent
     if(content.trim()===""){
