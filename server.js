@@ -128,11 +128,19 @@ async function connectDB(){
                 })
                 req.on('end',async()=>{
                     const data = querystring.parse(body)
-                    await fb.insertOne({
-                        feedback: decodeURIComponent(data.feedback)
-                    })
-                    res.writeHead(200, {"Content-Type":"text/plain"})
-                    res.end()
+                    // Backend length verification for feedback
+                    if(data.feedback.length>1000){
+                        res.writeHead(413, {"Content-Type":"text/plain"})
+                        res.end()
+                    }
+                    else{
+                        await fb.insertOne({
+                            feedback: decodeURIComponent(data.feedback)
+                        })
+                        res.writeHead(200, {"Content-Type":"text/plain"})
+                        res.end()
+                    }
+                    
                 })
             }
             // Sender Section
@@ -143,30 +151,46 @@ async function connectDB(){
                 })
                 req.on('end', async()=>{
                     let data = querystring.parse(body)
-                    let clipID = String(await randomFn())
-                    let pwdHashed = String(await pwdHashing(data.password))
-                    let rIndex = String(randomIndex())
-                    let iv = generateIV()
-                    let ivstr = iv.toString('hex')
-                    let encryptedObj = msgEncryption(data.Content, rIndex, iv)
-                    let encryptedMsg = encryptedObj.message
-                    let authTag = encryptedObj.authTag
-                    await cb.insertOne({
-                        clipBoardID: Number(clipID),
-                        message: encryptedMsg,
-                        authTag: authTag,
-                        readCount: 0,
-                        maxReadCount: Number(data.maxReadCount),
-                        wrongPwdCount: 0,
-                        maxWrongPwdCount: Number(data.maxWrongPwdCount),
-                        expireSeconds: Number(data.expireSeconds),
-                        expiresAt: new Date(Date.now()+Number(data.expireSeconds)*1000),
-                        password: String(pwdHashed),
-                        keyIndex: Number(rIndex),
-                        iv: ivstr
-                    })
-                    res.writeHead(200, {"Content-Type":"text/plain"})
-                    res.end(String(clipID))
+                    // Backend length and TTL Verification for sender's side
+                    if(data.Content.length>2500 || data.password.length>64){
+                        res.writeHead(413, {"Content-Type":"text/plain"})
+                        res.end()
+                    }
+                    else if(data.expireSeconds>86399 ||  data.expireSeconds<0){
+                        res.writeHead(400, {"Content-Type":"text/plain"})
+                        res.end()
+                    }
+                    else if(data.maxReadCount>2049 || data.maxReadCount<0 || 
+                        data.maxWrongPwdCount>100 || data.maxWrongPwdCount<0){
+                        res.writeHead(400, {"Content-Type":"text/plain"})
+                        res.end()
+                    }
+                    else{
+                        let clipID = String(await randomFn())
+                        let pwdHashed = String(await pwdHashing(data.password))
+                        let rIndex = String(randomIndex())
+                        let iv = generateIV()
+                        let ivstr = iv.toString('hex')
+                        let encryptedObj = msgEncryption(data.Content, rIndex, iv)
+                        let encryptedMsg = encryptedObj.message
+                        let authTag = encryptedObj.authTag
+                        await cb.insertOne({
+                            clipBoardID: Number(clipID),
+                            message: encryptedMsg,
+                            authTag: authTag,
+                            readCount: 0,
+                            maxReadCount: Number(data.maxReadCount),
+                            wrongPwdCount: 0,
+                            maxWrongPwdCount: Number(data.maxWrongPwdCount),
+                            expireSeconds: Number(data.expireSeconds),
+                            expiresAt: new Date(Date.now()+Number(data.expireSeconds)*1000),
+                            password: String(pwdHashed),
+                            keyIndex: Number(rIndex),
+                            iv: ivstr
+                        })
+                        res.writeHead(200, {"Content-Type":"text/plain"})
+                        res.end(String(clipID))
+                    }
                 })
             }
             // Receiver's section
@@ -179,29 +203,53 @@ async function connectDB(){
                     let data = querystring.parse(body)
                     let clipID = Number(data.clipID)
                     let clipPass = String(data.clipPass)
+                    if(data.clipID.length!=12 || clipPass.length>64){
+                        res.writeHead(400,{"Content-Type":"text/plain"})
+                        res.end()
+                    }
+                    else{
+                        const rl = []
+                        const clipDoc = await cb.findOne({clipBoardID: clipID})
+                        // Check whether the clipboard ID exists or not
+                        if(clipDoc){
+                            // Check whether the password matches or not
+                            const matchCheck = await bcrypt.compare(clipPass, clipDoc.password)
+                            if(matchCheck===true){
+                                try{
+                                    // Before doing decryption and sending the message to the receiver
+                                    // we need to check the no of read times
+                                    // Check readcounter value
+                                    // User opted if maxval>0
+                                    if(clipDoc.maxReadCount>0){
+                                        // if readCount>=maxval delete otherwise add 1
+                                        if(clipDoc.readCount>=clipDoc.maxReadCount){
+                                            await cb.deleteOne({clipBoardID: clipID})
+                                            res.end()
+                                        }
+                                        else{
+                                            await cb.updateOne({clipBoardID: clipID},{
+                                                $inc: {readCount: 1}
+                                            })
+                                            const keyList = [process.env.AES_KEY_1, process.env.AES_KEY_2,
+                                                process.env.AES_KEY_3, process.env.AES_KEY_4, 
+                                                process.env.AES_KEY_5]
+                                            let keyChosen = Buffer.from(keyList[clipDoc.keyIndex], 'hex')
+                                            let authTagGot = Buffer.from(clipDoc.authTag, 'hex')
+                                            let ivNeeded = Buffer.from(clipDoc.iv,'hex')
+                                            let encryptedMessage = clipDoc.message
 
-                    const rl = []
-                    const clipDoc = await cb.findOne({clipBoardID: clipID})
-                    // Check whether the clipboard ID exists or not
-                    if(clipDoc){
-                        // Check whether the password matches or not
-                        const matchCheck = await bcrypt.compare(clipPass, clipDoc.password)
-                        if(matchCheck===true){
-                            try{
-                                // Before doing decryption and sending the message to the receiver
-                                // we need to check the no of read times
-                                // Check readcounter value
-                                // User opted if maxval>0
-                                if(clipDoc.maxReadCount>0){
-                                    // if readCount>=maxval delete otherwise add 1
-                                    if(clipDoc.readCount>=clipDoc.maxReadCount){
-                                        await cb.deleteOne({clipBoardID: clipID})
-                                        res.end()
+                                            const decipherObj = crypto.createDecipheriv('aes-256-gcm',
+                                                keyChosen,ivNeeded)
+                                            decipherObj.setAuthTag(authTagGot)
+                                            let decryptedMessage = decipherObj.update(encryptedMessage,
+                                                'hex','utf8')
+                                            decryptedMessage+=decipherObj.final('utf8')
+                                            res.end(decodeURIComponent(decryptedMessage))
+                                        }
                                     }
+                                    // If user didn't opt for this setting --> 
+                                    // No need to update the read count
                                     else{
-                                        await cb.updateOne({clipBoardID: clipID},{
-                                            $inc: {readCount: 1}
-                                        })
                                         const keyList = [process.env.AES_KEY_1, process.env.AES_KEY_2,
                                             process.env.AES_KEY_3, process.env.AES_KEY_4, 
                                             process.env.AES_KEY_5]
@@ -217,56 +265,37 @@ async function connectDB(){
                                             'hex','utf8')
                                         decryptedMessage+=decipherObj.final('utf8')
                                         res.end(decodeURIComponent(decryptedMessage))
+                                    }   
+                                }
+                                catch(err){
+                                    console.log(err)
+                                    res.end()
+                                }
+                            }
+                            else{
+                                // It is found that the user has entered the wrong password
+                                // Before ending check the no of wrong pwd attempts counter
+                                // If maxval>0 then increase wrongcount by 1 
+                                //      if exceeds max val then delete the record from the database
+                                if(clipDoc.maxWrongPwdCount>0){
+                                    
+                                    if(clipDoc.wrongPwdCount+1>=clipDoc.maxWrongPwdCount){
+                                        await cb.deleteOne({clipBoardID: clipID})
+                                    }
+                                    else{
+                                        await cb.updateOne({clipBoardID: clipID},
+                                            {$inc: {wrongPwdCount: 1}
+                                        })
                                     }
                                 }
-                                // If user didn't opt for this setting --> 
-                                // No need to update the read count
-                                else{
-                                    const keyList = [process.env.AES_KEY_1, process.env.AES_KEY_2,
-                                        process.env.AES_KEY_3, process.env.AES_KEY_4, 
-                                        process.env.AES_KEY_5]
-                                    let keyChosen = Buffer.from(keyList[clipDoc.keyIndex], 'hex')
-                                    let authTagGot = Buffer.from(clipDoc.authTag, 'hex')
-                                    let ivNeeded = Buffer.from(clipDoc.iv,'hex')
-                                    let encryptedMessage = clipDoc.message
-
-                                    const decipherObj = crypto.createDecipheriv('aes-256-gcm',
-                                        keyChosen,ivNeeded)
-                                    decipherObj.setAuthTag(authTagGot)
-                                    let decryptedMessage = decipherObj.update(encryptedMessage,
-                                        'hex','utf8')
-                                    decryptedMessage+=decipherObj.final('utf8')
-                                    res.end(decodeURIComponent(decryptedMessage))
-                                }   
-                            }
-                            catch(err){
-                                console.log(err)
                                 res.end()
                             }
                         }
                         else{
-                            // It is found that the user has entered the wrong password
-                            // Before ending check the no of wrong pwd attempts counter
-                            // If maxval>0 then increase wrongcount by 1 
-                            //      if exceeds max val then delete the record from the database
-                            if(clipDoc.maxWrongPwdCount>0){
-                                
-                                if(clipDoc.wrongPwdCount+1>=clipDoc.maxWrongPwdCount){
-                                    await cb.deleteOne({clipBoardID: clipID})
-                                }
-                                else{
-                                    await cb.updateOne({clipBoardID: clipID},
-                                        {$inc: {wrongPwdCount: 1}
-                                    })
-                                }
-                            }
+                            // If clipBoard ID is not found
+                            res.writeHead(404, {'content-type':'text/plain'})
                             res.end()
                         }
-                    }
-                    else{
-                        // If clipBoard ID is not found
-                        res.writeHead(404, {'content-type':'text/plain'})
-                        res.end()
                     }
                 })
             }

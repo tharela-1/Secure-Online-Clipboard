@@ -62,6 +62,9 @@ async function sendFeedback(event){
         alert("Feedback sent successfully! Thank you for your valuable feedback!")
         fdb.value = ""
     }
+    else{
+        alert("Error 413 - Payload Too Large")
+    }
 }
 
 // Send Clipboard Content -- Home Page Sender Section interface with Node.js
@@ -97,6 +100,15 @@ only white spaces.")
         if(response.ok){
             alert("Data sent successfully!!!\nThank you for using this website!")
         }
+        else if(response.status===413){
+            alert("Error 413 - Payload Too Large")
+        }
+        else if(response.status===400){
+            alert("Error 400 - Bad Request")
+        }
+        else{
+            alert("Connection Error")
+        }
     }
 }
 // Retrieve Clipboard Content -- Home Page Receiver Section interface with Node.js
@@ -116,9 +128,10 @@ async function retreiveClipBoard(event){
 
     const resText = document.getElementById("output")
     let textVal = await response.text()
-    if(textVal===""){
-        resText.value = ""
-        alert("Clipboard ID or password may be invalid or the Clipboard \
+    if(response.ok){
+        if(textVal===""){
+            resText.value = ""
+            alert("Clipboard ID or password may be invalid or the Clipboard \
 you are searching for might have got expired or the maximum read count \
 or the maximum wrong password count of the clipboard with \
 that ID might have been reached.\n\
@@ -131,9 +144,17 @@ please let the developer know it by \
 sending the issue in the feedback page of this website.\n\
 Sorry for the inconvinience!!!\n\
 Thank you!!!")
+        }
+        else{
+            resText.value = textVal
+        }
+    }
+    else if(response.status==400){
+        alert("Error 400 - Bad Request")
+        resText.value = ""
     }
     else{
-        resText.value = textVal
+        alert("Connection Error")
     }
 }
 
