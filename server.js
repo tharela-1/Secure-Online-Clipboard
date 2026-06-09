@@ -183,7 +183,7 @@ async function connectDB(){
                             wrongPwdCount: 0,
                             maxWrongPwdCount: Number(data.maxWrongPwdCount),
                             expireSeconds: Math.max(30,Number(data.expireSeconds)),
-                            expiresAt: new Date(Date.now()+Number(data.expireSeconds)*1000),
+                            expiresAt: new Date(Date.now()+Math.max(30,Number(data.expireSeconds))*1000),
                             password: String(pwdHashed),
                             keyIndex: Number(rIndex),
                             iv: ivstr
