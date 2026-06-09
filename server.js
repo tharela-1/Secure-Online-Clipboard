@@ -156,7 +156,7 @@ async function connectDB(){
                         res.writeHead(413, {"Content-Type":"text/plain"})
                         res.end()
                     }
-                    else if(data.expireSeconds>86399 ||  data.expireSeconds<0){
+                    else if(data.Content.trim().length===0 || data.password.length<=0 || data.expireSeconds>86399 ||  data.expireSeconds<0){
                         res.writeHead(400, {"Content-Type":"text/plain"})
                         res.end()
                     }
