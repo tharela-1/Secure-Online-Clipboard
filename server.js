@@ -135,7 +135,7 @@ async function connectDB(){
                     }
                     else{
                         await fb.insertOne({
-                            feedback: decodeURIComponent(data.feedback)
+                            feedback: data.feedback
                         })
                         res.writeHead(200, {"Content-Type":"text/plain"})
                         res.end()
@@ -244,7 +244,7 @@ async function connectDB(){
                                             let decryptedMessage = decipherObj.update(encryptedMessage,
                                                 'hex','utf8')
                                             decryptedMessage+=decipherObj.final('utf8')
-                                            res.end(decodeURIComponent(decryptedMessage))
+                                            res.end(decryptedMessage)
                                         }
                                     }
                                     // If user didn't opt for this setting --> 
@@ -264,7 +264,7 @@ async function connectDB(){
                                         let decryptedMessage = decipherObj.update(encryptedMessage,
                                             'hex','utf8')
                                         decryptedMessage+=decipherObj.final('utf8')
-                                        res.end(decodeURIComponent(decryptedMessage))
+                                        res.end(decryptedMessage)
                                     }   
                                 }
                                 catch(err){

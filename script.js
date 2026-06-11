@@ -154,7 +154,20 @@ Thank you!!!")
         resText.value = ""
     }
     else{
-        alert("Connection Error")
+        alert("Clipboard ID or password may be invalid or the Clipboard \
+you are searching for might have got expired or the maximum read count \
+or the maximum wrong password count of the clipboard with \
+that ID might have been reached.\n\
+Otherwise there might be an issue from the developer's side as well. \
+If you feel that the clipBoard ID and password \
+that you entered is correct and the clipboard with that ID still \
+has time before getting expired and the maximum read count \
+and the maximum wrong password count has not been reached, then \
+please let the developer know it by \
+sending the issue in the feedback page of this website.\n\
+Sorry for the inconvinience!!!\n\
+Thank you!!!")
+        resText.value=""
     }
 }
 
