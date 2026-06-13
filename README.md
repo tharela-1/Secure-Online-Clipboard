@@ -18,12 +18,13 @@ Further improvements are being done based on users' feedback.
 5. Users can set the custom read count and custom wrong password count (They also have a choice not to choose this)
 6. Passwords are hashed before storing in the database
 7. Messages are encrypted before storing in the database
-8. Both Server-side and client-side length validation, TTL validation, read count validation and wrong password count validation have been implemented to prevent client-side bypass of imput limits
-9. There is a feedback page to tell the feedback to the developer
-10. Help Page to understand how to use this website and see the Privacy Policy and Terms of Service of this website
-11. Users can copy the generated clipboard ID and the retreived content to the clipboard in the computer
-12. Users can download the retreived content as a text file (.txt file)
-13. Welcome Page and Page Not Found Page are also present
+8. Both Server-side and client-side length validation, TTL validation, read count validation and wrong password count validation have been implemented to prevent client-side bypass of imput limits.
+9. Even though the user sets a TTL of less than 30 seconds, the minimum TTL has been set to 30 seconds to give a meaningful lifecycle for the generated clipboard.
+10. There is a feedback page to tell the feedback to the developer
+11. Help Page to understand how to use this website and see the Privacy Policy and Terms of Service of this website
+12. Users can copy the generated clipboard ID and the retreived content to the clipboard in the computer
+13. Users can download the retreived content as a text file (.txt file)
+14. Welcome Page and Page Not Found Page are also present
 
 # Versions:
 *Ver 1.0.0*: It is the basic version of the project. Only some of the features listed above are implemented. But user has to calculate the TTL in seconds and enter it. Users can enter upto 1000 characters per clipboard.  
