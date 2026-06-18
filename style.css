@@ -249,6 +249,12 @@ body{
         font-size: 16px;
         font-family: monospace;
     }
+    #showPwd1{
+        width: 130px;
+    }
+    #showPwd2{
+        width: 130px;
+    }
     /*Disables the password view eye symbol from Microsoft Edge and Internet Explorer*/
     input::-ms-reveal{
         display: none;
