@@ -13,24 +13,13 @@
         </div>
     </div>
     <marquee style="font-family: monospace; font-size: 17px;">Welcome to the Secure Online 
-        Clipboard website.
+        Clipboard website!
         By using this website, <b>you agree to the <a href="/help">Privacy Policy</a>, the 
         <a href="/help">Terms of Service</a> and the <a href="/help">License Terms</a></b> of this website. 
         See the <b><a href="/help">Help Page</a></b> for more details. 
         Your feedback is very valuable. 
         Give your valuable feedback to help this website to work even better 
         in the <a href="/feedback">Feedback Page</a>.
-    </marquee>
-    <marquee style="font-family: monospace; font-size: 17px;">
-        The fields marked with <span style="color: red">*</span> 
-        are required fields in their respective section. You need to fill all the required 
-        fields in the respective section 
-        and press the corresponding button. For sender side enter all the required values 
-        in the sender section 
-        and for the receiver, enter all the values in the receiver section. I hope that 
-        this website would be very helpful 
-        for you. Thanks for using the website! Don't forget to post your valuable feedback to the developer! 
-        Send it by clicking on the link on the page or <a href="/feedback">here</a>. 
     </marquee>
     <hr class="line">
     <div class="tabs">
@@ -144,7 +133,8 @@
                 <input type="reset" class="actionObj" id="reset1">
                 <br><br>
                 <hr class="line">
-                <br>
+                <span class="heading">Output:</span>
+                <br><br>
                 <label for="sendCode" class="listObj">Your send code (clipboard ID) is:</label>
                 <br>
                 <input type="number" class="listObj" 
@@ -158,7 +148,9 @@
                 <span class="secHead">Receiver Section</span>
             </div>
             <hr class="line">
+            <span class="heading">NOTE: The fields marked with <span style="color: red">*</span> are required fields.</span>
             <br>
+            <hr class="line">
             <form method="POST" onsubmit="retreiveClipBoard(event)">
                 <label for="retCode" class = "listObj">Enter the clipboard ID(12 - digit)
                     <span style="color: red">*</span></label>
@@ -193,8 +185,8 @@
                 <br>
 
                 <hr class="line">
-                <br>
-
+                <span class="heading">Output:</span>
+                <br><br>
                 <label for="resultObj" class="listObj">Retrieved Text:</label>
                 <br>
 
