@@ -240,12 +240,14 @@ body{
     #senderTab{
         width: 100px;
         height: 50px;
-        font-size: 15px;
+        font-size: 16px;
+        font-family: monospace;
     }
     #receiverTab{
         width: 100px;
         height: 50px;
-        font-size: 15px;
+        font-size: 16px;
+        font-family: monospace;
     }
     /*Disables the password view eye symbol from Microsoft Edge and Internet Explorer*/
     input::-ms-reveal{
