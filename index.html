@@ -33,8 +33,12 @@
         Send it by clicking on the link on the page or <a href="/feedback">here</a>. 
     </marquee>
     <hr class="line">
+    <div class="tabs">
+        <button onclick="showSenderSection()" class="actionObj" id="senderTab">Sender</button>
+        <button onclick="showReceiverSection()" class="actionObj" id="receiverTab">Receiver</button>
+    </div>
     <div class="container">
-        <div class="field">
+        <div class="field" id="senderSectionComponent">
             <div class="divSecHead">
                 <span class="secHead">Sender Section</span>
             </div>
@@ -149,7 +153,7 @@
             </form>
             <button onclick = "copyFn2()" class="actionObj" id="copy2">Copy Code</button>
         </div>
-        <div class="field">
+        <div class="field" id="receiverSectionComponent">
             <div class="divSecHead">
                 <span class="secHead">Receiver Section</span>
             </div>

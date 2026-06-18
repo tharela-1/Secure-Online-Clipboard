@@ -241,3 +241,16 @@ function showPassword2(){
         clipPass.disabled = false;
     }, 5500)
 }
+// Function for Tab Concept -- Show sender or receiver at one time
+function showSenderSection(){
+    let ssec = document.getElementById("senderSectionComponent")
+    let rsec = document.getElementById("receiverSectionComponent")
+    ssec.style.display = "block"
+    rsec.style.display = "none"
+}
+function showReceiverSection(){
+    let ssec = document.getElementById("senderSectionComponent")
+    let rsec = document.getElementById("receiverSectionComponent")
+    ssec.style.display = "none"
+    rsec.style.display = "block"
+}

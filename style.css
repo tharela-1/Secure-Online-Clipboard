@@ -46,14 +46,14 @@ body{
         padding: 5px;
         margin: 10px;
         font-family: monospace;
-        font-size: 14px; 
+        font-size: 14px;
     }
     .longListObj{
         font-size: 14px;
         font-family: monospace;
         margin: 5px;
         color: blue;
-        max-width: 90%
+        width: 90%;
     }
     textarea{
         resize: none;
@@ -226,6 +226,26 @@ body{
     #showPwd2:hover{
         background-color: orangered;
         color: white;
+    }
+    #senderSectionComponent{
+        display: block;
+    }
+    #receiverSectionComponent{
+        display: none;
+    }
+    .tabs{
+        display: flex;
+        justify-content: center;
+    }
+    #senderTab{
+        width: 100px;
+        height: 50px;
+        font-size: 15px;
+    }
+    #receiverTab{
+        width: 100px;
+        height: 50px;
+        font-size: 15px;
     }
     /*Disables the password view eye symbol from Microsoft Edge and Internet Explorer*/
     input::-ms-reveal{
