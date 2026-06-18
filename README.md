@@ -9,7 +9,7 @@ Deployment: This website is deployed on Railway.
 Deployment URL: https://secure-online-clipboard-production.up.railway.app/  
 
 Project Timeline: May 14, 2026 - May 31, 2026 (for version 1.0.1)  
-Further improvements are being done based on users' feedback.
+
 # Features:
 1. Each clipboard has a unique 12 - digit ID
 2. We can set a password for each clipboard
