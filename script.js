@@ -1,6 +1,8 @@
 // Event Listener function code to display live character count in a textarea
 const sendContent = document.getElementById('sendContent');
 const charCount = document.getElementById('charCount');
+const updateContent = document.getElementById('updateContent');
+const charCount2 = document.getElementById('charCount2');
 
 sendContent.addEventListener('input', () => {
     if(sendContent.value.length<2500){
@@ -10,7 +12,14 @@ sendContent.addEventListener('input', () => {
         charCount.innerHTML = "<b><span class='listObj' style='color: red'>" + sendContent.value.length + " / 2500 characters</span></b>";
     }
 })
-
+updateContent.addEventListener('input', () => {
+    if(updateContent.value.length<2500){
+        charCount2.innerHTML = "<span class='listObj'>" + updateContent.value.length + " / 2500 characters</span>";
+    }
+    else{
+        charCount2.innerHTML = "<b><span class='listObj' style='color: red'>" + updateContent.value.length + " / 2500 characters</span></b>";
+    }
+})
 // Function for 'Copy Text' and 'Copy Code' buttons to copy text in the output text area to clipboard
 async function copyFn(){
     let op = document.getElementById("output")
@@ -37,7 +46,7 @@ async function copyFn2(){
         button.textContent = "Copied!"
 
         setTimeout( () => {
-            button.textContent = "Copy Text"
+            button.textContent = "Copy Code"
         }, 2500)
     }
     catch(err){
@@ -77,10 +86,16 @@ async function sendClipBoard(event){
     const ttls = document.getElementById("sendTTLSeconds").value
     const rkt = document.getElementById("readKTimes").value
     const wpkt = document.getElementById("passwordKTimes").value
+    const upkt = document.getElementById("updateKTimes").value
 
     const ttl = String(Math.max(30, Number(ttlh)*3600  + Number(ttlm) * 60 + Number(ttls)))
     
-    // Prevents empty string and the string containing only whitespaces to be sent
+    if(Number(rkt)>0 && Number(upkt)>Number(rkt)){
+        alert("Update count must always be less than or equal to the read count if you are setting the read count value i.e., when you are setting a read count value and not giving unlimited reads.")
+        return
+    }
+    
+        // Prevents empty string and the string containing only whitespaces to be sent
     if(content.trim()===""){
         alert("There is no content to be sent.\
 \nThe content that you are trying to send may be empty or it may contain \
@@ -92,7 +107,7 @@ only white spaces.")
             headers: {
                 "Content-Type":"application/x-www-form-urlencoded"
             },
-            body: `Content=${encodeURIComponent(content)}&maxReadCount=${rkt}&expireSeconds=${ttl}&maxWrongPwdCount=${wpkt}&password=${encodeURIComponent(pwd)}`
+            body: `Content=${encodeURIComponent(content)}&maxReadCount=${rkt}&expireSeconds=${ttl}&maxWrongPwdCount=${wpkt}&maxUpdateLimit=${upkt}&password=${encodeURIComponent(pwd)}`
         })
         const sCode = document.getElementById("sendCode")
         sCode.value = await response.text()
@@ -253,4 +268,30 @@ function showReceiverSection(){
     let rsec = document.getElementById("receiverSectionComponent")
     ssec.style.display = "none"
     rsec.style.display = "block"
+}
+
+// Update clipboard function
+async function updateClipboard(){
+    const clipID = Number(document.getElementById("clipID").value)
+    const clipPass = document.getElementById("clipPass").value
+    const updateText = document.getElementById("updateContent").value
+    const response = await fetch("/updateClipboard", {
+        method: "POST",
+        headers: {"Content-Type":"application/x-www-form-urlencoded"},
+        body: `clipID=${clipID}&clipPass=${encodeURIComponent(clipPass)}&updateText=${encodeURIComponent(updateText)}`
+    })
+    if(response.ok){
+        alert("Update Successful!!\n\
+Thanks for using this website!!")
+    }
+    else if(response.status==413){
+        alert("Error 413 - Payload Too Large")
+    }
+    else if(response.status==400){
+        alert("Error 400 - Bad Request")
+    }
+    else{
+        alert("Update Failed.\n\
+The update limit may be exhausted or the clipboard ID might have been set read-only or the clipboard ID may not exist.")
+    }
 }

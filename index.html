@@ -89,13 +89,13 @@
                     else if(this.value<=0){this.value=0}
                     else{this.value = Math.round(this.value)}"
                     placeholder="Hours" step="1" id="sendTTLHours">
-
+                    <br>
                     <input type="number" class="ttlObj" min="0" max="59" required
                     oninput="if(this.value>=59){this.value=59}
                     else if(this.value<=0){this.value=0}
                     else{this.value = Math.round(this.value)}"
                     placeholder="Minutes" step="1" id="sendTTLMinutes">
-
+                    <br>
                     <input type="number" class="ttlObj" min="0" max="59" required
                     oninput="if(this.value>=59){this.value=59}
                     else if(this.value<=0){this.value=0}
@@ -113,8 +113,9 @@
                 <br><br>
                 
                 <label for="readkTimes" class="listObj">Make the message sent retrievable only for how many times? (max 2049) 
-                    If you don't want to set this then enter the value as 0.
+                    If you don't want to set this then enter the value as 0. i.e., 0 means unlimited read count is allowed.
                     <span style="color: red">*</span></label>
+                <br>
                 <input type="number" min="0" max="2049" name="readkTimes" class="listObj" 
                 required step="1" placeholder="Enter how many times"
                 oninput="if(this.value>=2049){this.value=2049}else if(this.value<=0){this.value=0}
@@ -123,12 +124,27 @@
 
                 <label for="deleteDoc" class="listObj">Delete the document in the database 
                     after how many wrong password attempts? (max 100) If you don't want to set this then enter the value as 0.
+                    i.e., 0 means unlimited number of wrong password attempts are allowed.
                     <span style="color: red">*</span></label>
+                <br>
                 <input type="number" min = "0" max = "100" name="deleteDoc" class="listObj" required
                 oninput="if(this.value>=100){this.value=100}else if(this.value<=0){this.value=0}
                 else{this.value = Math.round(this.value)}" step="1"
                 placeholder="Enter how many times" id = "passwordKTimes">
+                <br><br>
+                <label for="updatekTimes" class="listObj">Make the message sent updatable only for how many times? (max 2049) 
+                    If you want read-only then enter the value as 0.
+                    <span style="color: red">*</span>
+                    <br>
+                    <b>NOTE: Update count must always be less than or equal to the Read count value. 
+                        This rule applies only when you are setting the read count value to some finite value and not as unlimited. 
+                    </b></label>
                 <br>
+                <input type="number" min="0" max="2049" name="updatekTimes" class="listObj" 
+                required step="1" placeholder="Enter how many times"
+                oninput="if(this.value>=2049){this.value=2049}else if(this.value<=0){this.value=0}
+                else{this.value = Math.round(this.value)}" id="updateKTimes">
+                <br><br>
                 <button class="actionObj" id="send1">Send Text</button>
                 <input type="reset" class="actionObj" id="reset1">
                 <br><br>
@@ -148,9 +164,13 @@
                 <span class="secHead">Receiver Section</span>
             </div>
             <hr class="line">
-            <span class="heading">NOTE: The fields marked with <span style="color: red">*</span> are required fields.</span>
+            <span class="heading">NOTE: The fields marked with <span style="color: red">*</span> are required fields.
+                The field marked with <span style="color: red">**</span> is required only when you want to update the content 
+                of the clipboard by pressing the <b>Update Text</b> button</span>
             <br>
             <hr class="line">
+            <span class="heading">Retrieval Section:</span>
+            <br><br>
             <form method="POST" onsubmit="retreiveClipBoard(event)">
                 <label for="retCode" class = "listObj">Enter the clipboard ID(12 - digit)
                     <span style="color: red">*</span></label>
@@ -185,7 +205,7 @@
                 <br>
 
                 <hr class="line">
-                <span class="heading">Output:</span>
+                <span class="heading">View and Update Section:</span>
                 <br><br>
                 <label for="resultObj" class="listObj">Retrieved Text:</label>
                 <br>
@@ -193,10 +213,29 @@
                 <textarea rows="11" cols="88" name="resultObj" readonly 
                     placeholder="Your retrieved text will be shown here" 
                     class = "longListObj" id="output"></textarea>
-            </form>
-            <button onclick = "copyFn()" class="actionObj" id="copy1">Copy Text</button>
+             </form>
+                <br><br>
+                <label for="updateText" class = "listObj">Enter the updated text (max 2500 characters)
+                    <span style="color: red">**</span>
+                    <br>
+                    <b>NOTE: If you are updating the clipboard's content then some text must be there to update. 
+                        It can't be empty and it can't contain only whitespaces.</b>
+                    </label>
+                <br>
+                
+                <textarea required name="updateText" 
+                class = "longListObj" rows="11" cols="88" maxlength="2500"
+                oninput= "if(this.value.length>2500){this.value = this.value.slice(0,2500)}"
+                placeholder="Enter Text here" id="updateContent"></textarea>
+                <br>
+                <div id="charCount2" align="right"></div>
+                <br>
+        
+            <button onclick = "updateClipboard(event)" class="actionObj" id="update">Update Text</button>
+            <button onclick = "copyFn()" class="actionObj" id="copy1">Copy Retrieved Text</button>
+            <br>
             <button onclick = "downloadTxtFile()" class="actionObj" id="write1">
-                Download as a Text File(.txt)</button>
+                Download Retrieved Text as Text File</button>
             <br><br>
             <hr class="line">
             <div class="divSecHead">

@@ -1,6 +1,6 @@
 {
   "name": "secure_online_clipboard",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "description": "This is a secure online clipboard application. This would be very helpful if we need to transfer the data from one device to another in a secure way and the data should not last permanently.",
   "license": "MIT",
   "author": "Tharakeshvar Elavarasu",

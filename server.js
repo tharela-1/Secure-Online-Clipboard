@@ -156,12 +156,21 @@ async function connectDB(){
                         res.writeHead(413, {"Content-Type":"text/plain"})
                         res.end()
                     }
-                    else if(data.Content.trim().length===0 || data.password.length<=0 || data.expireSeconds>86399 ||  data.expireSeconds<0){
+                    else if(data.Content.length<0 || data.Content.trim().length===0 || data.password.length<=0 || 
+                    Number(data.expireSeconds)>86399 ||  Number(data.expireSeconds)<0){
                         res.writeHead(400, {"Content-Type":"text/plain"})
                         res.end()
                     }
-                    else if(data.maxReadCount>2049 || data.maxReadCount<0 || 
-                        data.maxWrongPwdCount>100 || data.maxWrongPwdCount<0){
+                    else if(Number(data.maxReadCount)>2049 || Number(data.maxReadCount)<0 || 
+                        Number(data.maxWrongPwdCount)>100 || Number(data.maxWrongPwdCount)<0 || Number(data.maxUpdateLimit)>2049 ||
+                    Number(data.maxUpdateLimit)<0){
+                        res.writeHead(400, {"Content-Type":"text/plain"})
+                        res.end()
+                    }
+                    else if(Number(data.maxUpdateLimit)>Number(data.maxReadCount) && Number(data.maxReadCount)>0){
+                        console.log("Came here")
+                        console.log(data.maxUpdateLimit)
+                        console.log(data.maxReadCount)
                         res.writeHead(400, {"Content-Type":"text/plain"})
                         res.end()
                     }
@@ -182,6 +191,8 @@ async function connectDB(){
                             maxReadCount: Number(data.maxReadCount),
                             wrongPwdCount: 0,
                             maxWrongPwdCount: Number(data.maxWrongPwdCount),
+                            updateCount: 0,
+                            maxUpdateLimit: Number(data.maxUpdateLimit),
                             expireSeconds: Math.max(30,Number(data.expireSeconds)),
                             expiresAt: new Date(Date.now()+Math.max(30,Number(data.expireSeconds))*1000),
                             password: String(pwdHashed),
@@ -289,6 +300,91 @@ async function connectDB(){
                                     }
                                 }
                                 res.end()
+                            }
+                        }
+                        else{
+                            // If clipBoard ID is not found
+                            res.writeHead(404, {'content-type':'text/plain'})
+                            res.end()
+                        }
+                    }
+                })
+            }
+            else if(method==="POST" && url==="/updateClipboard"){
+                
+                let body = ""
+                req.on('data',(chunk)=>{
+                    body+=chunk
+                })
+                req.on('end', async()=>{
+                    let data = querystring.parse(body)
+                    let clipID = Number(data.clipID)
+                    let clipPass = String(data.clipPass)
+                    let updateText = String(data.updateText)
+                    if(updateText.trim().length === 0  || updateText.length<=0 ||
+                        data.clipID.length!=12 || clipPass.length<=0){
+                        res.writeHead(400, {'content-type':'text/plain'})
+                        res.end()
+                    }
+                    else if(updateText.length>2500 || clipPass.length>64){
+                        res.writeHead(413, {'content-type':'text/plain'})
+                        res.end()
+                    }
+                    else{
+                        let rec = await cb.findOne({clipBoardID: clipID})
+                        if(rec){
+                            if(rec.updateCount>=rec.maxUpdateLimit){
+                                // If update limit exceeded or clipboard is read-only
+                                res.writeHead(403, {'content-type':'text/plain'})
+                                res.end()
+                            }
+                            // Compare whether password mathces or not
+                            else{
+                                const matchCheck = await bcrypt.compare(clipPass, rec.password)
+                                if(matchCheck){
+                                    // Password is correct
+
+                                    // Encrypt the updated text
+                                    let rIndex = randomIndex()
+                                    let ivNeeded = generateIV()
+                                    let encrypted = msgEncryption(updateText, rIndex, ivNeeded)
+                                    let encryptedMessage = encrypted.message.toString("hex")
+                                    let authTag = encrypted.authTag
+                                    // Incremented update count
+                                    await cb.updateOne({clipBoardID: clipID},
+                                        {$set: {
+                                            keyIndex: rIndex,
+                                            authTag: authTag,
+                                            message: encryptedMessage,
+                                            iv: ivNeeded.toString("hex")
+                                        },
+                                        $inc: {updateCount: 1}})
+
+                                    // Send normal end
+                                    res.end()
+                                }
+                                else{
+                                    // User has entered the wrong password
+                                    if(rec.maxWrongPwdCount>0){
+                                        // If user has opted for it, then do the wrong password count increment
+                                        if(rec.wrongPwdCount+1>=rec.maxWrongPwdCount){
+                                            await cb.deleteOne({clipBoardID: clipID})
+                                            res.writeHead(400, {'content-type':'text/plain'})
+                                            res.end()
+                                        }
+                                        else{
+                                            await cb.updateOne({clipBoardID: clipID},
+                                                {$inc: {wrongPwdCount: 1}
+                                            })
+                                            res.writeHead(400, {'content-type':'text/plain'})
+                                            res.end()
+                                        }
+                                    }
+                                    else{
+                                        res.writeHead(400, {'content-type':'text/plain'})
+                                        res.end()
+                                    }
+                                }
                             }
                         }
                         else{
