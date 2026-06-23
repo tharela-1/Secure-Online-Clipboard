@@ -182,6 +182,13 @@ body{
         background-color: green;
         color: white;
     }
+    #srcCode{
+        font-size: 16px;
+    }
+    #srcCode:hover{
+        background-color: purple;
+        color: white;
+    }
     /*Button animations
     1. Use the transform : scale(x) to get the size of the button to the x*100% size of the original size.
     2. Use opacity to set how light or solid the button is when pressed. 0 -> Light 1 -> Solid*/

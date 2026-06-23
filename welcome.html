@@ -31,6 +31,7 @@
             i.e., 23:59:59)</li>
         <li>Number of times you can read the message (max of 2049 times)</li>
         <li>Number of times you can enter wrong passwords (max of 100 times)</li>
+        <li>Number of times you can update the content of the clipboard (max of 2049 times)</li>
     </ol>
     <br>
     <span class="welcomeText">The choosing of the settings 4 and 5 is your choice. You can choose it if you
@@ -38,6 +39,9 @@
         are not chosen (This is applicable only for the settings 4 and 5 mentioned above)
         i.e., For setting 4 if you enter the value as 0 then the setting 4 is not chosen and for the 
         setting 5 if you enter the value as 0 then the setting 5 is not chosen.
+        <br>
+        If you want to allow updations to your clipboard's content you can allow that as well by 
+        entering a value for the setting 6. If you want read only then enter the value for setting 6 as 0.
     </span>
     <br>
     
@@ -58,7 +62,13 @@
     </span>
     <button class="actionObj" id="helpPage" class = "introClass"
     onclick="window.location.href='/help';">Go to Help Page</button>
-    
+    <br><br>
+    <span class="welcomeText">You can go and access the source code by clicking on the button 
+        given here:
+    </span>
+    <button class="actionObj" id="srcCode" class = "introClass"
+    onclick="window.location.href='https://github.com/tharela-1/Secure-Online-Clipboard';">
+    Go to Source Code</button>
     <br><br>
     <span class="welcomeText">By using this website, <b>you agree to the 
         <a href="/help">Privacy Policy</a>, the <a href="/help">Terms of Service</a> and the 
