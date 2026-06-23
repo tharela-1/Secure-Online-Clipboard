@@ -310,7 +310,7 @@ async function connectDB(){
                     }
                 })
             }
-            else if(method==="POST" && url==="/updateClipboard"){
+            else if(method==="PATCH" && url==="/updateClipboard"){
                 
                 let body = ""
                 req.on('data',(chunk)=>{

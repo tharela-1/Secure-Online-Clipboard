@@ -276,7 +276,7 @@ async function updateClipboard(){
     const clipPass = document.getElementById("clipPass").value
     const updateText = document.getElementById("updateContent").value
     const response = await fetch("/updateClipboard", {
-        method: "POST",
+        method: "PATCH",
         headers: {"Content-Type":"application/x-www-form-urlencoded"},
         body: `clipID=${clipID}&clipPass=${encodeURIComponent(clipPass)}&updateText=${encodeURIComponent(updateText)}`
     })
