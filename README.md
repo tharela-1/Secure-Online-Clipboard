@@ -27,7 +27,7 @@ Project Timeline: May 14, 2026 - Jun 23, 2026 (for version 1.1.0)
 14. Users can copy the generated clipboard ID and the retreived content to the clipboard in the computer
 15. Users can download the retreived content as a text file (.txt file)
 16. Welcome Page and Page Not Found Page are also present
-17. Tab System is used in the clipboard page to have a clean UI layout
+17. Tab System is used in the clipboard page to have a clean UI layout - This helps avoiding long website in case of mobile view and having a clear layout and avoids lot of text in the same window in case of a desktop view
 
 # Versions:
 *Ver 1.0.0*: It is the basic version of the project. Only some of the features listed above are implemented. But user has to calculate the TTL in seconds and enter it. Users can enter upto 1000 characters per clipboard.  
