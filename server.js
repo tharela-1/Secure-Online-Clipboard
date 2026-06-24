@@ -82,6 +82,14 @@ async function connectDB(){
         const fb = db.collection("feedback")
         const sb = MongoClient.db("Clipboard")
         const cb = sb.collection("clipboard")
+        /*Collect the following usage analytics such as:
+            1. Number of clipboards generated
+            2. Number of reads done
+            3. Number of updates done
+            4. Number of clipboards deleted based on read count
+            5. Number of clipboards deleted based on wrong password count*/
+        const adb = MongoClient.db("Analytics")
+        const ab = adb.collection("analytics")
         // setting up the TTL index and the index based on clipboard ID
         await cb.createIndex({expiresAt: 1}, {expireAfterSeconds: 0})
         await cb.createIndex({clipBoardID: 1})
@@ -168,9 +176,6 @@ async function connectDB(){
                         res.end()
                     }
                     else if(Number(data.maxUpdateLimit)>Number(data.maxReadCount) && Number(data.maxReadCount)>0){
-                        console.log("Came here")
-                        console.log(data.maxUpdateLimit)
-                        console.log(data.maxReadCount)
                         res.writeHead(400, {"Content-Type":"text/plain"})
                         res.end()
                     }
@@ -199,6 +204,8 @@ async function connectDB(){
                             keyIndex: Number(rIndex),
                             iv: ivstr
                         })
+                        // Analytics of number of clipboards generated is collected
+                        await ab.updateOne({param: "clipboardsGeneratedCount"},{$inc: {count: 1}}, {upsert: true})
                         res.writeHead(200, {"Content-Type":"text/plain"})
                         res.end(String(clipID))
                     }
@@ -235,12 +242,18 @@ async function connectDB(){
                                         // if readCount>=maxval delete otherwise add 1
                                         if(clipDoc.readCount>=clipDoc.maxReadCount){
                                             await cb.deleteOne({clipBoardID: clipID})
+                                            // Analytics of number of clipboards deleted based on read count is collected
+                                            await ab.updateOne({param: "clipboardsDeletedBasedOnReadCount"},
+                                                {$inc: {count: 1}}, {upsert: true})
                                             res.end()
                                         }
                                         else{
                                             await cb.updateOne({clipBoardID: clipID},{
                                                 $inc: {readCount: 1}
                                             })
+                                            // Analytics of number of read count is collected
+                                            await ab.updateOne({param: "clipboardsReadCount"},
+                                                {$inc: {count: 1}}, {upsert: true})
                                             const keyList = [process.env.AES_KEY_1, process.env.AES_KEY_2,
                                                 process.env.AES_KEY_3, process.env.AES_KEY_4, 
                                                 process.env.AES_KEY_5]
@@ -255,12 +268,25 @@ async function connectDB(){
                                             let decryptedMessage = decipherObj.update(encryptedMessage,
                                                 'hex','utf8')
                                             decryptedMessage+=decipherObj.final('utf8')
-                                            res.end(decryptedMessage)
+                                            // Read has been done so delete if limit exceeds
+                                            if(clipDoc.readCount+1>=clipDoc.maxReadCount){
+                                                await cb.deleteOne({clipBoardID: clipID})
+                                                // Analytics of number of clipboards deleted based on read count is collected
+                                                await ab.updateOne({param: "clipboardsDeletedBasedOnReadCount"},
+                                                    {$inc: {count: 1}}, {upsert: true})
+                                                res.end(decryptedMessage)
+                                            }
+                                            else{
+                                                res.end(decryptedMessage)
+                                            }
                                         }
                                     }
                                     // If user didn't opt for this setting --> 
                                     // No need to update the read count
                                     else{
+                                        // Analytics of number of read count is collected
+                                        await ab.updateOne({param: "clipboardsReadCount"},
+                                            {$inc: {count: 1}}, {upsert: true})
                                         const keyList = [process.env.AES_KEY_1, process.env.AES_KEY_2,
                                             process.env.AES_KEY_3, process.env.AES_KEY_4, 
                                             process.env.AES_KEY_5]
@@ -292,6 +318,10 @@ async function connectDB(){
                                     
                                     if(clipDoc.wrongPwdCount+1>=clipDoc.maxWrongPwdCount){
                                         await cb.deleteOne({clipBoardID: clipID})
+                                        // Analytics of number of clipboards deleted based on wrong
+                                        // password count is collected
+                                        await ab.updateOne({param: "clipboardsDeletedBasedOnWrongPasswordCount"},
+                                            {$inc: {count: 1}}, {upsert: true})
                                     }
                                     else{
                                         await cb.updateOne({clipBoardID: clipID},
@@ -343,7 +373,7 @@ async function connectDB(){
                                 const matchCheck = await bcrypt.compare(clipPass, rec.password)
                                 if(matchCheck){
                                     // Password is correct
-
+                                    
                                     // Encrypt the updated text
                                     let rIndex = randomIndex()
                                     let ivNeeded = generateIV()
@@ -359,7 +389,10 @@ async function connectDB(){
                                             iv: ivNeeded.toString("hex")
                                         },
                                         $inc: {updateCount: 1}})
-
+                                    
+                                    // Analytics of number of update count is collected
+                                    await ab.updateOne({param: "clipboardsUpdateCount"},
+                                        {$inc: {count: 1}}, {upsert: true})
                                     // Send normal end
                                     res.end()
                                 }
@@ -369,6 +402,10 @@ async function connectDB(){
                                         // If user has opted for it, then do the wrong password count increment
                                         if(rec.wrongPwdCount+1>=rec.maxWrongPwdCount){
                                             await cb.deleteOne({clipBoardID: clipID})
+                                            // Analytics of number of clipboards deleted based on wrong
+                                            // password count is collected
+                                            await ab.updateOne({param: "clipboardsDeletedBasedOnWrongPasswordCount"},
+                                                {$inc: {count: 1}}, {upsert: true})
                                             res.writeHead(400, {'content-type':'text/plain'})
                                             res.end()
                                         }
