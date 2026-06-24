@@ -8,7 +8,7 @@ Database Used: MongoDB Atlas
 Deployment: This website is deployed on Railway.  
 Deployment URL: https://secure-online-clipboard-production.up.railway.app/  
 
-Project Timeline: May 14, 2026 - Jun 23, 2026 (for version 1.1.0)  
+Project Timeline: May 14, 2026 - Jun 24, 2026 (for version 1.2.0)  
 
 # Features:
 1. Each clipboard has a unique 12 - digit ID
@@ -28,6 +28,7 @@ Project Timeline: May 14, 2026 - Jun 23, 2026 (for version 1.1.0)
 15. Users can download the retreived content as a text file (.txt file)
 16. Welcome Page and Page Not Found Page are also present
 17. Tab System is used in the clipboard page to have a clean UI layout - This helps avoiding long website in case of mobile view and having a clear layout and avoids lot of text in the same window in case of a desktop view
+18. Basic anonymous usage analytics such as Number of clipboards generated, Number of reads, Number of updates, Number of clipboards deleted based on read count and wrong password attempts count to improve the reliability and performance of this website.
 
 # Versions:
 *Ver 1.0.0*: It is the basic version of the project. Only some of the features listed above are implemented. But user has to calculate the TTL in seconds and enter it. Users can enter upto 1000 characters per clipboard.  
@@ -40,4 +41,6 @@ Project Timeline: May 14, 2026 - Jun 23, 2026 (for version 1.1.0)
 
 *Ver 1.0.4*: This is the fifth version of this project. Here UI improvement has been done. Instead of having both sender and receiver section side by side in case of a desktop / laptop and one below the other in case of a mobile, the Tab System has been implemented. By clicking the sender button (tab) we can go to the sender's section and by clicking the receiver button (tab) we can go to the receiver's section. Also the UI Clarity improvements have been done.
 
-*Ver 1.1.0*: This is the sixth version of this project. Here new feature of updating the clipboard contents has been introduced i.e., users can choose whether they want the contents of the clipboard to be read-only or editable and they can set the maximum update limit as well to it. If users allow unlimited read count, then they can set the maximum update limit to a maximum of 2049 times. But if they opt for having read count limit then the update count limit maximum value can be only till the read count limit. 
+*Ver 1.1.0*: This is the sixth version of this project. Here new feature of updating the clipboard contents has been introduced i.e., users can choose whether they want the contents of the clipboard to be read-only or editable and they can set the maximum update limit as well to it. If users allow unlimited read count, then they can set the maximum update limit to a maximum of 2049 times. But if they opt for having read count limit then the update count limit maximum value can be only till the read count limit.  
+
+*Ver 1.2.0*: This is the seventh version of this project. Here analytics collection feature has been implemented to collect the basic anonymous usage analytics such as the Number of clipboards generated, Number of reads, Number of updates, Number of clipboards deleted based on read count and wrong password attempts count to improve the reliability and performance of this website. Improved read count limit enforcement logic to ensure consistent handling when the configured read count limit is reached.
