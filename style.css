@@ -189,6 +189,29 @@ body{
         background-color: purple;
         color: white;
     }
+    #code2{
+        font-size: 16px;
+        font-family: monospace;
+    }
+    #code2:hover{
+        background-color: purple;
+        color: white;
+    }
+    #welcome2{
+        font-size: 16px;
+        font-family: monospace;
+    }
+    #welcome2:hover{
+        background-color: lightblue;
+    }
+    #feedback2{
+        font-size: 16px;
+        font-family: monospace;
+    }
+    #feedback2:hover{
+        background-color: green;
+        color: white;
+    }
     /*Button animations
     1. Use the transform : scale(x) to get the size of the button to the x*100% size of the original size.
     2. Use opacity to set how light or solid the button is when pressed. 0 -> Light 1 -> Solid*/
