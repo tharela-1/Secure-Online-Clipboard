@@ -227,7 +227,7 @@ async function connectDB(){
                     }
                     else{
                         const rl = []
-                        const clipDoc = await cb.findOne({clipBoardID: clipID})
+                        let clipDoc = await cb.findOne({clipBoardID: clipID})
                         // Check whether the clipboard ID exists or not
                         if(clipDoc){
                             // Check whether the password matches or not
@@ -239,18 +239,39 @@ async function connectDB(){
                                     // Check readcounter value
                                     // User opted if maxval>0
                                     if(clipDoc.maxReadCount>0){
-                                        // if readCount>=maxval delete otherwise add 1
-                                        if(clipDoc.readCount>=clipDoc.maxReadCount){
+                                        // Find the cipboard document that has the ID as the clipID and 
+                                        // the readcount is less than the max read count 
+                                        clipDoc = await cb.findOneAndUpdate({clipBoardID: clipID, readCount: {$lt: clipDoc.maxReadCount}},
+                                            {$inc: {readCount: 1}}, {returnDocument: "after"}
+                                        )
+                                        if(!clipDoc || clipDoc.readCount>clipDoc.maxReadCount){
+                                            await cb.deleteOne({clipBoardID: clipID})
+                                            res.end()
+                                        }
+                                        else if(clipDoc.readCount === clipDoc.maxReadCount){
+                                            await ab.updateOne({param: "clipboardsReadCount"},
+                                                {$inc: {count: 1}}, {upsert: true})
+                                            const keyList = [process.env.AES_KEY_1, process.env.AES_KEY_2,
+                                                process.env.AES_KEY_3, process.env.AES_KEY_4, 
+                                                process.env.AES_KEY_5]
+                                            let keyChosen = Buffer.from(keyList[clipDoc.keyIndex], 'hex')
+                                            let authTagGot = Buffer.from(clipDoc.authTag, 'hex')
+                                            let ivNeeded = Buffer.from(clipDoc.iv,'hex')
+                                            let encryptedMessage = clipDoc.message
+
+                                            const decipherObj = crypto.createDecipheriv('aes-256-gcm',
+                                                keyChosen,ivNeeded)
+                                            decipherObj.setAuthTag(authTagGot)
+                                            let decryptedMessage = decipherObj.update(encryptedMessage,
+                                                'hex','utf8')
+                                            decryptedMessage+=decipherObj.final('utf8')
                                             await cb.deleteOne({clipBoardID: clipID})
                                             // Analytics of number of clipboards deleted based on read count is collected
                                             await ab.updateOne({param: "clipboardsDeletedBasedOnReadCount"},
                                                 {$inc: {count: 1}}, {upsert: true})
-                                            res.end()
+                                            res.end(decryptedMessage)
                                         }
                                         else{
-                                            await cb.updateOne({clipBoardID: clipID},{
-                                                $inc: {readCount: 1}
-                                            })
                                             // Analytics of number of read count is collected
                                             await ab.updateOne({param: "clipboardsReadCount"},
                                                 {$inc: {count: 1}}, {upsert: true})
@@ -268,17 +289,7 @@ async function connectDB(){
                                             let decryptedMessage = decipherObj.update(encryptedMessage,
                                                 'hex','utf8')
                                             decryptedMessage+=decipherObj.final('utf8')
-                                            // Read has been done so delete if limit exceeds
-                                            if(clipDoc.readCount+1>=clipDoc.maxReadCount){
-                                                await cb.deleteOne({clipBoardID: clipID})
-                                                // Analytics of number of clipboards deleted based on read count is collected
-                                                await ab.updateOne({param: "clipboardsDeletedBasedOnReadCount"},
-                                                    {$inc: {count: 1}}, {upsert: true})
-                                                res.end(decryptedMessage)
-                                            }
-                                            else{
-                                                res.end(decryptedMessage)
-                                            }
+                                            res.end(decryptedMessage)
                                         }
                                     }
                                     // If user didn't opt for this setting --> 
