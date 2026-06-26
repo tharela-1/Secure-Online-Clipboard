@@ -29,6 +29,7 @@ Project Timeline: May 14, 2026 - Jun 24, 2026 (for version 1.2.0)
 16. Welcome Page and Page Not Found Page are also present
 17. Tab System is used in the clipboard page to have a clean UI layout - This helps avoiding long website in case of mobile view and having a clear layout and avoids lot of text in the same window in case of a desktop view
 18. Basic anonymous usage analytics such as Number of clipboards generated, Number of reads, Number of updates, Number of clipboards deleted based on read count and wrong password attempts count to improve the reliability and performance of this website.
+19. Concurrency features has been implemented in read operations for read count based deletion and wrong password count based deletion using MongoDB atomic functions like findOneAndUpdate(). Also race condition for clipboard ID has been handled by giving unique indexing for clipboard ID column and using a while loop and exception handling mechanism to ensure that unique clipboard IDs are generated properly.
 
 # Versions:
 *Ver 1.0.0*: It is the basic version of the project. Only some of the features listed above are implemented. But user has to calculate the TTL in seconds and enter it. Users can enter upto 1000 characters per clipboard.  
@@ -45,6 +46,8 @@ Project Timeline: May 14, 2026 - Jun 24, 2026 (for version 1.2.0)
 
 *Ver 1.2.0*: This is the seventh version of this project. Here analytics collection feature has been implemented to collect the basic anonymous usage analytics such as the Number of clipboards generated, Number of reads, Number of updates, Number of clipboards deleted based on read count and wrong password attempts count to improve the reliability and performance of this website. Improved read count limit enforcement logic to ensure consistent handling when the configured read count limit is reached.
 
-*Ver 1.2.1*: This is the eighth version of this project. In this version the Race Conditions in read operations have been fixed for read count based deletion.
+*Ver 1.2.1*: This is the eighth version of this project. In this version the Race Conditions in read operations have been fixed for read count based deletion  using database atomic operations like findOneAndUpdate().
 
-*Ver 1.2.2*: This is the ninth version of this project. In this version the Race Conditions in read operations have been fixed for wrong password count based deletion.
+*Ver 1.2.2*: This is the ninth version of this project. In this version the Race Conditions in read operations have been fixed for wrong password count based deletion using database atomic operations like findOneAndUpdate().
+
+*Ver 1.2.3*: This is the tenth version of this project. In this version the Race Conditions in the generation of clipboard ID has been fixed by giving unique index to clipboard ID and using a while loop with error handling mechanism to avoid race conditions in the generation of the clipboard ID.
