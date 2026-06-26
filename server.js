@@ -92,7 +92,7 @@ async function connectDB(){
         const ab = adb.collection("analytics")
         // setting up the TTL index and the index based on clipboard ID
         await cb.createIndex({expiresAt: 1}, {expireAfterSeconds: 0})
-        await cb.createIndex({clipBoardID: 1})
+        await cb.createIndex({clipBoardID: 1}, {unique: true})
         http.createServer((req, res)=>{
 
             // Basic routing to load all the HTML, CSS and the JS pages
@@ -180,34 +180,43 @@ async function connectDB(){
                         res.end()
                     }
                     else{
-                        let clipID = String(await randomFn())
-                        let pwdHashed = String(await pwdHashing(data.password))
-                        let rIndex = String(randomIndex())
-                        let iv = generateIV()
-                        let ivstr = iv.toString('hex')
-                        let encryptedObj = msgEncryption(data.Content, rIndex, iv)
-                        let encryptedMsg = encryptedObj.message
-                        let authTag = encryptedObj.authTag
-                        await cb.insertOne({
-                            clipBoardID: Number(clipID),
-                            message: encryptedMsg,
-                            authTag: authTag,
-                            readCount: 0,
-                            maxReadCount: Number(data.maxReadCount),
-                            wrongPwdCount: 0,
-                            maxWrongPwdCount: Number(data.maxWrongPwdCount),
-                            updateCount: 0,
-                            maxUpdateLimit: Number(data.maxUpdateLimit),
-                            expireSeconds: Math.max(30,Number(data.expireSeconds)),
-                            expiresAt: new Date(Date.now()+Math.max(30,Number(data.expireSeconds))*1000),
-                            password: String(pwdHashed),
-                            keyIndex: Number(rIndex),
-                            iv: ivstr
-                        })
-                        // Analytics of number of clipboards generated is collected
-                        await ab.updateOne({param: "clipboardsGeneratedCount"},{$inc: {count: 1}}, {upsert: true})
-                        res.writeHead(200, {"Content-Type":"text/plain"})
-                        res.end(String(clipID))
+                        let cond = true
+                        while(cond){
+                            try{
+                                let clipID = String(await randomFn())
+                                let pwdHashed = String(await pwdHashing(data.password))
+                                let rIndex = String(randomIndex())
+                                let iv = generateIV()
+                                let ivstr = iv.toString('hex')
+                                let encryptedObj = msgEncryption(data.Content, rIndex, iv)
+                                let encryptedMsg = encryptedObj.message
+                                let authTag = encryptedObj.authTag
+                                await cb.insertOne({
+                                    clipBoardID: Number(clipID),
+                                    message: encryptedMsg,
+                                    authTag: authTag,
+                                    readCount: 0,
+                                    maxReadCount: Number(data.maxReadCount),
+                                    wrongPwdCount: 0,
+                                    maxWrongPwdCount: Number(data.maxWrongPwdCount),
+                                    updateCount: 0,
+                                    maxUpdateLimit: Number(data.maxUpdateLimit),
+                                    expireSeconds: Math.max(30,Number(data.expireSeconds)),
+                                    expiresAt: new Date(Date.now()+Math.max(30,Number(data.expireSeconds))*1000),
+                                    password: String(pwdHashed),
+                                    keyIndex: Number(rIndex),
+                                    iv: ivstr
+                                })
+                                // Analytics of number of clipboards generated is collected
+                                await ab.updateOne({param: "clipboardsGeneratedCount"},{$inc: {count: 1}}, {upsert: true})
+                                cond = false
+                                res.writeHead(200, {"Content-Type":"text/plain"})
+                                res.end(String(clipID))
+                            }
+                            catch(err){
+                                console.log("Retrying...")
+                            }
+                        }
                     }
                 })
             }
