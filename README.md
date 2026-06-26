@@ -46,3 +46,5 @@ Project Timeline: May 14, 2026 - Jun 24, 2026 (for version 1.2.0)
 *Ver 1.2.0*: This is the seventh version of this project. Here analytics collection feature has been implemented to collect the basic anonymous usage analytics such as the Number of clipboards generated, Number of reads, Number of updates, Number of clipboards deleted based on read count and wrong password attempts count to improve the reliability and performance of this website. Improved read count limit enforcement logic to ensure consistent handling when the configured read count limit is reached.
 
 *Ver 1.2.1*: This is the eighth version of this project. In this version the Race Conditions in read operations have been fixed for read count based deletion.
+
+*Ver 1.2.2*: This is the ninth version of this project. In this version the Race Conditions in read operations have been fixed for wrong password count based deletion.
