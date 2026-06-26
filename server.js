@@ -240,7 +240,8 @@ async function connectDB(){
                                     // User opted if maxval>0
                                     if(clipDoc.maxReadCount>0){
                                         // Find the cipboard document that has the ID as the clipID and 
-                                        // the readcount is less than the max read count 
+                                        // the readcount is less than the max read count
+                                        // Using findOneAndUpdate to handle the Race Conditions 
                                         clipDoc = await cb.findOneAndUpdate({clipBoardID: clipID, readCount: {$lt: clipDoc.maxReadCount}},
                                             {$inc: {readCount: 1}}, {returnDocument: "after"}
                                         )
@@ -326,18 +327,21 @@ async function connectDB(){
                                 // If maxval>0 then increase wrongcount by 1 
                                 //      if exceeds max val then delete the record from the database
                                 if(clipDoc.maxWrongPwdCount>0){
+                                    // Using findOneAndUpdate to handle the Race Conditions 
+                                    clipDoc = await cb.findOneAndUpdate({clipBoardID: clipID, 
+                                        wrongPwdCount: {$lt: clipDoc.maxWrongPwdCount}},
+                                        {$inc: {wrongPwdCount: 1}}, {returnDocument: "after"}
+                                    )
                                     
-                                    if(clipDoc.wrongPwdCount+1>=clipDoc.maxWrongPwdCount){
+                                    if(!clipDoc || clipDoc.wrongPwdCount>clipDoc.maxWrongPwdCount){
+                                        await cb.deleteOne({clipBoardID: clipID})
+                                    }
+                                    else if(clipDoc.wrongPwdCount==clipDoc.maxWrongPwdCount){
                                         await cb.deleteOne({clipBoardID: clipID})
                                         // Analytics of number of clipboards deleted based on wrong
                                         // password count is collected
                                         await ab.updateOne({param: "clipboardsDeletedBasedOnWrongPasswordCount"},
                                             {$inc: {count: 1}}, {upsert: true})
-                                    }
-                                    else{
-                                        await cb.updateOne({clipBoardID: clipID},
-                                            {$inc: {wrongPwdCount: 1}
-                                        })
                                     }
                                 }
                                 res.end()
