@@ -9,7 +9,7 @@ const MongoClient = new mongodb.MongoClient(process.env.MONGO_URI)
 
 /* Logic to generate the 12 - digit random number:
 
-Formula: Math.random() + (10^12 - 10^11) + (10^11) 
+Formula: Math.floor(Math.random() + (10^12 - 10^11)) + (10^11) 
 Logic: If the value generated is not in the db its fine otherwise regenerate it 
 */
 async function randomFn(){
@@ -22,7 +22,7 @@ async function randomFn(){
     let cond = true
     let val;
     while(cond){
-        val = Math.floor(Math.random()*900000000000+100000000000)
+        val = Math.floor(Math.random()*900000000000)+100000000000
         if(val in rl){
             cond = true
         }
@@ -405,20 +405,29 @@ async function connectDB(){
                                     let encryptedMessage = encrypted.message.toString("hex")
                                     let authTag = encrypted.authTag
                                     // Incremented update count
-                                    await cb.updateOne({clipBoardID: clipID},
-                                        {$set: {
-                                            keyIndex: rIndex,
-                                            authTag: authTag,
-                                            message: encryptedMessage,
-                                            iv: ivNeeded.toString("hex")
-                                        },
-                                        $inc: {updateCount: 1}})
-                                    
-                                    // Analytics of number of update count is collected
-                                    await ab.updateOne({param: "clipboardsUpdateCount"},
-                                        {$inc: {count: 1}}, {upsert: true})
-                                    // Send normal end
-                                    res.end()
+                                    // Using findOneAndUpdate() to handle the race conditions
+                                    rec = await cb.findOneAndUpdate({clipBoardID: clipID, updateCount: {$lt: rec.maxUpdateLimit}},
+                                        {$inc: {updateCount: 1}}, {returnDocument: "after"})
+                                    if(!rec || rec.updateCount>rec.maxUpdateLimit){
+                                        res.writeHead(400,{"content-type": "text/plain"})
+                                        res.end()
+                                    }
+                                    else{
+                                        // Do the updation work
+                                        await cb.updateOne({clipBoardID: clipID},
+                                            { $set: {
+                                                keyIndex: rIndex,
+                                                authTag: authTag,
+                                                message: encryptedMessage,
+                                                iv: ivNeeded.toString("hex")
+                                            }}
+                                        )
+                                        // Analytics of number of update count is collected
+                                        await ab.updateOne({param: "clipboardsUpdateCount"},
+                                            {$inc: {count: 1}}, {upsert: true})
+                                        // Send normal end
+                                        res.end()
+                                        }
                                 }
                                 else{
                                     // User has entered the wrong password
