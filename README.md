@@ -8,7 +8,7 @@ Database Used: MongoDB Atlas
 Deployment: This website is deployed on Railway.  
 Deployment URL: https://secure-online-clipboard-production.up.railway.app/  
 
-Project Timeline: May 14, 2026 - Jun 27, 2026 (for version 1.2.4)  
+Project Timeline: May 14, 2026 - Jun 29, 2026 (for version 1.2.4)  
 
 # Features:
 1. Each clipboard has a unique 12 - digit ID
@@ -52,4 +52,8 @@ Project Timeline: May 14, 2026 - Jun 27, 2026 (for version 1.2.4)
 
 *Ver 1.2.3*: This is the tenth version of this project. In this version the Race Conditions in the generation of clipboard ID has been fixed by giving unique index to clipboard ID and using a while loop with error handling mechanism to avoid race conditions in the generation of the clipboard ID.
 
-*Ver 1.2.4*: This is the eleventh version of this project. In this version the Race Conditions in update operations have been fixed for update count using database atomic operations like findOneAndUpdate().
+*Ver 1.2.4*: This is the eleventh version of this project. In this version the Race Conditions in update operations have been fixed for update count using database atomic operations like findOneAndUpdate(). In Feedback and Help Pages, the Back button on top is changed to Home. In the welcome page, the button *Go to Clipboard Page* has been brought to top for easy access.
+
+# Limitations:
+1. Race conditions have not been handled for wrong password count during the update operations.
+2. Rate limiting and Caching have not been implemented.
