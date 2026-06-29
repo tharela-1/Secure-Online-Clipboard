@@ -240,6 +240,10 @@ async function connectDB(){
                         // Check whether the clipboard ID exists or not
                         if(clipDoc){
                             // Check whether the password matches or not
+                            if(Date.now()>clipDoc.expiresAt){
+                                res.writeHead(410,{"Content-Type":"text/plain"})
+                                res.end()
+                            }
                             const matchCheck = await bcrypt.compare(clipPass, clipDoc.password)
                             if(matchCheck===true){
                                 try{
@@ -387,7 +391,11 @@ async function connectDB(){
                     else{
                         let rec = await cb.findOne({clipBoardID: clipID})
                         if(rec){
-                            if(rec.updateCount>=rec.maxUpdateLimit){
+                            if(Date.now()>rec.expiresAt){
+                                res.writeHead(410,{"Content-Type":"text/plain"})
+                                res.end()
+                            }
+                            else if(rec.updateCount>=rec.maxUpdateLimit){
                                 // If update limit exceeded or clipboard is read-only
                                 res.writeHead(403, {'content-type':'text/plain'})
                                 res.end()
