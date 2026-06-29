@@ -30,6 +30,7 @@ Project Timeline: May 14, 2026 - Jun 29, 2026 (for version 1.2.4)
 17. Tab System is used in the clipboard page to have a clean UI layout - This helps avoiding long website in case of mobile view and having a clear layout and avoids lot of text in the same window in case of a desktop view
 18. Basic anonymous usage analytics such as Number of clipboards generated, Number of reads, Number of updates, Number of clipboards deleted based on read count and wrong password attempts count to improve the reliability and performance of this website.
 19. Concurrency handling has been implemented in read operations for read count based deletion and wrong password count based deletion and this concurrency handling has been implemented in update operations for update count using MongoDB atomic functions like findOneAndUpdate(). Also race condition for clipboard ID has been handled by giving unique indexing for clipboard ID column and using a while loop and exception handling mechanism to ensure that unique clipboard IDs are generated properly.
+20. Clipboards are automatically made inaccessible immediately after their expiry time, even though the deletion from the database may take some time.
 
 # Versions:
 *Ver 1.0.0*: It is the basic version of the project. Only some of the features listed above are implemented. But user has to calculate the TTL in seconds and enter it. Users can enter upto 1000 characters per clipboard.  
