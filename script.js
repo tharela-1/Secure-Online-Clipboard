@@ -20,7 +20,7 @@ updateContent.addEventListener('input', () => {
         charCount2.innerHTML = "<b><span class='listObj' style='color: red'>" + updateContent.value.length + " / 2500 characters</span></b>";
     }
 })
-// Function for 'Copy Text' and 'Copy Code' buttons to copy text in the output text area to clipboard
+// Function for 'Copy Retrieved Text' and 'Copy Code' buttons to copy text in the output text area to clipboard
 async function copyFn(){
     let op = document.getElementById("output")
     let val = op.value
@@ -30,7 +30,7 @@ async function copyFn(){
         button.textContent = "Copied!"
 
         setTimeout( () => {
-            button.textContent = "Copy Text"
+            button.textContent = "Copy Retrieved Text"
         }, 2500)
     }
     catch(err){
