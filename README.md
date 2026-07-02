@@ -8,7 +8,7 @@ Database Used: MongoDB Atlas
 Deployment: This website is deployed on Railway.  
 Deployment URL: https://secure-online-clipboard-production.up.railway.app/  
 
-Project Timeline: May 14, 2026 - Jun 29, 2026 (for version 1.2.4)  
+Project Timeline: May 14, 2026 - Jul 2, 2026 (for version 1.3.0)  
 
 # Features:
 1. Each clipboard has a unique 12 - digit ID
