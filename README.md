@@ -31,6 +31,7 @@ Project Timeline: May 14, 2026 - Jun 29, 2026 (for version 1.2.4)
 18. Basic anonymous usage analytics such as Number of clipboards generated, Number of reads, Number of updates, Number of clipboards deleted based on read count and wrong password attempts count to improve the reliability and performance of this website.
 19. Concurrency handling has been implemented in read operations for read count based deletion and wrong password count based deletion and this concurrency handling has been implemented in update operations for update count using MongoDB atomic functions like findOneAndUpdate(). Also race condition for clipboard ID has been handled by giving unique indexing for clipboard ID column and using a while loop and exception handling mechanism to ensure that unique clipboard IDs are generated properly.
 20. Clipboards are automatically made inaccessible immediately after their expiry time, even though the deletion from the database may take some time.
+21. Layered Heuristic based Recommendation feature has been added in the sender section to give recommended values for the users for the TTL, maximum Read count, maximum wrong password count and maximum update count. Users can edit the recommended values as well according to their needs.
 
 # Versions:
 *Ver 1.0.0*: It is the basic version of the project. Only some of the features listed above are implemented. But user has to calculate the TTL in seconds and enter it. Users can enter upto 1000 characters per clipboard.  
@@ -55,6 +56,9 @@ Project Timeline: May 14, 2026 - Jun 29, 2026 (for version 1.2.4)
 
 *Ver 1.2.4*: This is the eleventh version of this project. In this version the Race Conditions in update operations have been fixed for update count using database atomic operations like findOneAndUpdate(). In Feedback and Help Pages, the Back button on top is changed to Home. In the welcome page, the button *Go to Clipboard Page* has been brought to top for easy access.
 
+*Ver 1.3.0*:  This is the twelfth version of this project. In this version Layered Heuristic based Recommendation feature (with a total of 9 layers) has been added in the sender section to give recommended values for the users for the TTL, maximum Read count, maximum wrong password count and maximum update count. Users can edit the recommended values as well according to their needs.
+
 # Limitations:
 1. Race conditions have not been handled for wrong password count during the update operations.
 2. Rate limiting and Caching have not been implemented.
+3. To give the recommendations for the TTL, maximum read count, maximum wrong password attempt count and maximum update count Heuristic - based recommendation is used. So the generated information may sometimes be inaccurate.
