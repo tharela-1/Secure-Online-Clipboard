@@ -32,7 +32,7 @@
                 <span class="secHead">Sender Section</span>
             </div>
             <hr class="line">
-            <span class="heading">NOTE: Fill the following sections: Section - I and Section - II in the Sender Section 
+            <span class="heading">NOTE: Fill the following sections: Section - I, Section - II and Section - III in the Sender Section 
                 before you press the Send Text button.
                 The fields marked with <span style="color: red">*</span> are required fields.
             </span>
@@ -72,7 +72,24 @@
                 
                 <button type="button" onclick="showPassword1()" class="actionObj" id="showPwd1">Show Password</button>
                 <br><br>
-                
+                <hr class="line">
+                <span class="heading">Section - II:</span>
+                <br><br>
+                <span class="heading"> For the sections Section - II and Section - III you can either enter your 
+                  own values or even ask the system for a recommendation based on the message that you are going to send.
+                  <br>
+                  <b>NOTE: The recommendation feature DOES NOT use any sort of AI Tools. It is purely based on 
+                    the words present in your message i.e., this is a heuristic based recommendation. 
+                    For giving this recommendation, the message is NOT sent to any server. 
+                    The recommendation given may be inaccurate as well because the recommendation is 
+                    heuristic based recommendation i.e., only based on the words present 
+                    in the message. So manually check them and 
+                    edit according to your needs before sending.</b>
+                </span>
+                <br><br>
+                <button type="button" class="actionObj" id="recommend-me-button" 
+                onclick="recommendMe()">Generate Recommendations</button>
+                <br><br>
                 <label for="Timer" class="listObj">How long do you want the message to be accessible? 
                     The max allowed time is 23 hrs 59 mins 59 secs (Fill the hours in the first box, 
                     Minutes in the second box and Seconds in the Third box)<br>
@@ -106,7 +123,7 @@
 
                 <br>
                 <hr class="line">
-                <span class="heading">Section - II:</span>
+                <span class="heading">Section - III:</span>
                 <br><br>
                 
                 <span class="heading">Extra Privacy features:</span>

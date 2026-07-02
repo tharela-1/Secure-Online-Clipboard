@@ -123,7 +123,7 @@
             to the read count limit.</li>
         <li>Read and update are independent operations i.e., they both are not dependent on each other.</li>
         <li>If you reach the maximum updation limit, the clipboard becomes read only after that i.e., reaching the update limit 
-            does not automatically trigger deletion of the clipboard.
+            DOES NOT automatically trigger deletion of the clipboard.
         </li>
         <li>If you make wrong password attempts while trying to update the contents of the clipboard, then that is also counted 
             as wrong password attempts.
@@ -133,6 +133,18 @@
                 Update Text button. In that case if password is found to be wrong, then it is also counted as a wrong password 
                 attempt.
             </b>
+        </li>
+        <li>
+          If you want the system to recommend the TTL, maximum read count, maximum wrong password attempt count 
+          and maximum update count you can do that by clciking on the Generate Recommendations button.
+          <br>
+          Note that the recommendation generated may not always be accurate because its a heuristic based 
+          recommendation, i.e., its only based 
+          on the words that you want to send as a message. It uses only predefined set of rules and pattern matching 
+          for giving this recommendation. For giving this recommendation your data is not sent to any server.
+          <br>
+          Also for giving this recommendation, no Artificial Intelligence(AI) or Machine Learning(ML)
+          models are used.
         </li>
     </ul>
     <br>

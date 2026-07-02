@@ -349,7 +349,7 @@ async function connectDB(){
                                     if(!clipDoc || clipDoc.wrongPwdCount>clipDoc.maxWrongPwdCount){
                                         await cb.deleteOne({clipBoardID: clipID})
                                     }
-                                    else if(clipDoc.wrongPwdCount==clipDoc.maxWrongPwdCount){
+                                    else if(clipDoc.wrongPwdCount===clipDoc.maxWrongPwdCount){
                                         await cb.deleteOne({clipBoardID: clipID})
                                         // Analytics of number of clipboards deleted based on wrong
                                         // password count is collected

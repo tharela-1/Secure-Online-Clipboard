@@ -295,3 +295,264 @@ Thanks for using this website!!")
 The update limit may be exhausted or the clipboard ID might have been set read-only or the clipboard ID may not exist.")
     }
 }
+// Recommend TTL, Read count, Wrong password count, Update Count using heuristic based approach
+
+function randomInt(start, end){
+  return Math.floor(Math.random()*Math.abs(end-start+1))+start
+}
+function recommendMe(){
+  let msg = document.getElementById("sendContent")
+  
+  let ttlh = document.getElementById("sendTTLHours")
+  let ttlm = document.getElementById("sendTTLMinutes")
+  let ttls = document.getElementById("sendTTLSeconds")
+  let readcnt = document.getElementById("readKTimes")
+  let wpwdcnt = document.getElementById("passwordKTimes")
+  let updatecnt = document.getElementById("updateKTimes")
+
+  /*
+  Things to recommend:
+  1. TTL -- Time To Live
+  2. Read count
+  3. Wrong password count
+  4. Update Count
+  */
+
+  // Convert message to lower case
+  let message = msg.value.toLowerCase()
+  if(message.trim().length === 0){
+    alert("Please type something to get recommendation")
+  }
+  else if(message.length>2500){
+    alert("Message length can be a maximum of 2500 characters")
+  }
+  else{
+
+     /*
+    Heuristic Recommendation - Priority Order:
+    1. OTP KeyWords -- TTL between 1 min and 2 min, only 1 read count, max of 2 wrong password attempts and no updates allowed
+    2. Password Keywords -- TTL between 2 min and 5 min, 1 - 3 read count, max of 3 - 5 wrong password attempts and no updates allowed
+    3. Banking Keywords -- TTL between 5 min and 10 min, 1 - 3 read count, max of 3 wrong password attempts and max 1 updates allowed
+    4. ID Keywords -- TTL between 8 min and 15 min, 2 - 5 read count, max of 5 wrong password attempts and max 1 updates allowed
+    5. Email ID -- TTL between 12 min and 20 min, 2 - 5 read count, max of 5 wrong password attempts and max 1 updates allowed
+    6. Usernames -- TTL between 20 min and 30 min, 6 - 10 read count, max of 10 - 15 wrong password attempts and max 2 updates allowed
+    7. Meeting notes -- TTL between 40 min and 4 hrs , 20 - 50 read count, max of 60 - 75 wrong password attempts and max 4 - 5 updates allowed
+    8. Source Code -- TTL between 2 hrs and 6 hrs , 10 - 25 read count, max of 80 - 100 wrong password attempts and max 5 - 10 updates allowed
+    9. General Chat -- TTL is set to 23 hrs 59 min 59 sec, unlimited read count, unlimited wrong password count, 100 - 150 updates allowed
+    */
+
+
+    // OTPs are highest priority
+    let otpKeywords = ['otp','one time password','one-time-password','one_time_password',
+      'verification-code','onetimepassword','verification code', 'access-token', 'access token',
+      'access_token', 'access_key', 'access key', 'access-key', 'secret key', 'secret-key',
+      'secret_key', 'secret token', 'secret-token', 'secret_token', 'secret pin', 'secret-pin',
+      'secret_pin', 'secret', 'validation code', 'validation-code', 'validation_code', 'secure pin',
+      'secure-pin', 'secure_pin', 'security code', 'security_code', 'security-code', 'one_time', 
+      'one time', 'one-time', 'secure', 'security'
+    ]
+
+    // Passwords are next priority
+    let passwordKeywords = ['password', 'pwd', 'passwd', 'pass word', 'passcode', 'pass code', 'secret code',
+      'secret-code', 'secret_code', 'api_key', 'apikey', 'api key', 'api-key', 'key', 'private', 'authentication',
+      'env', '.env', 'aes_key', 'aes key', 'jwt key', 'jwt_key', 'aes-key', 'jwt-key'
+    ]
+
+    // Banking details are next priority
+    let bankingKeywords = ['card', 'cheque', 'credit', 'debit', 'neft', 'rtgs', 'imps', 'fixed deposit', 
+      'fixed_deposit', 'fixed-deposit', 'savings', 'expenses', 'emi', 'loan', 'interest', 
+      'intrest', 'fd', 'policy', 'insurance', 'life insurance', 'life-insurance', 'life_insurance', 
+      'passbook', 'pass book', 'pass-book', 'pass_book', 'asset', 'gold', 'silver', 
+      'money', 'currency', 'amount', 'deposit', 'withdraw', 'cash', 'demand', 'draft', 'dd', 
+      'stock', 'mutual fund', 'mutual-fund', 'mutual_fund', 'dividend', 'challan', 'chellan', 'pay',
+      'upi', 'fund', 'tax', 'salary', 'income', 'bank', 'nominee', 'nominnee', 'account', 'revenue',
+      'profit', 'loss', 'market', 'pension', 'rate'
+    ]
+
+    // Identity based words are the next priority
+    let idKeywords = ['id card', 'id_card', 'id-card', 'government id', 'government-id', 'government_id',
+      'identity card', 'identity_card', 'identity-card', 'proof', 'identity', 'document', 'visa', 'passport',
+      'pass port', 'address', 'id'
+    ]
+
+    // Email check has to be done - split into words and check if each word is a valid email or not
+    let emailRegex = /^[a-zA-Z0-9.-_%+]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/
+    
+    // Usernames are next priority
+    let usernameKeywords = ['username', 'user name', 'user id', 'userid', 'id', 'user-name', 'user_name',
+      'user_id'
+    ]
+
+    // Meeting notes are next priority
+    let meetingKeywords = ['list', 'meeting', 'minutes of the meeting', 'minutes-of-the-meeting',
+      'minutes_of_the_meeting', 'summary', 'meeting minutes', 'meeting-minutes', 'meeting_minutes', 'notes'
+    ]
+
+    // Source codes are next priority
+    let srccodeKeywords = ['source code', 'code', 'source_code', 'source-code', 'file', 'folder', 'directory',
+      'repository', '#include', 'class', 'function', 'var', 'let', 'const', 'def', 'extends', 'import', 'public', 
+      'private', 'using namespace', 'export', 'package', 'json', '[]', 'int ', 'char ', 'print', 'console.log',
+      'System.out.print', 'async', 'await', 'yield', '=>', 'string', 'null', 'undefined', '/*', '*/', '++', 'for',
+      'while'
+    ]
+
+    // Now checking each condition
+    let otpCond = false
+    let passCond = false
+    let bankCond = false
+    let idCond = false
+    let emailCond = false
+    let usernameCond = false
+    let meetingCond = false
+    let srcCond = false
+    let generalCond = false
+
+    // otp condition check
+    for(let i=0; i<otpKeywords.length;i++){
+      if(message.includes(otpKeywords[i])){
+        otpCond = true
+        break
+      }
+    }
+    // password condition check
+    for(let i=0; i<passwordKeywords.length;i++){
+      if(message.includes(passwordKeywords[i])){
+        passCond = true
+        break
+      }
+    }
+    // banking condition check
+    for(let i=0;i<bankingKeywords.length;i++){
+      if(message.includes(bankingKeywords[i])){
+        bankCond = true
+        break
+      }
+    }
+    // ID cards condition check
+    for(let i=0;i<idKeywords.length;i++){
+      if(message.includes(idKeywords[i])){
+        idCond = true
+        break
+      }
+    }
+    // email condition check
+    let msgarr = message.split(" ")
+    for(let i=0;i<msgarr.length;i++){
+      if (emailRegex.test(msgarr[i])){
+        emailCond = true
+      }
+    }
+    // User names condition check
+    for(let i=0;i<usernameKeywords.length;i++){
+      if(message.includes(usernameKeywords[i])){
+        usernameCond = true
+        break
+      }
+    }
+    // Meeting notes condition check
+    for(let i=0;i<meetingKeywords.length;i++){
+      if(message.includes(meetingKeywords[i])){
+        meetingCond = true
+        break
+      }
+    }
+    // Source Code condition check
+    let srccount = 0
+    for(let i=0;i<srccodeKeywords.length;i++){
+      if(message.includes(srccodeKeywords[i])){
+        srccount+=1
+        break
+      }
+    }
+    if(srccount>=4){
+      srcCond = true
+    }
+    if(!otpCond && !passCond && !bankCond && !idCond && !emailCond && !usernameCond && !meetingCond && !srcCond){
+      generalCond = true
+    }
+    // Now all conditions have been checked
+    // Now we have to make the decision
+
+    if(otpCond){
+      let totalTTL = randomInt(60,120)
+      ttlh.value = Math.floor(totalTTL/3600)
+      ttlm.value = Math.floor((totalTTL%3600)/60)
+      ttls.value = Math.floor(totalTTL%60)
+      readcnt.value = 1
+      wpwdcnt.value = 2
+      updatecnt.value = 0
+    }
+    else if(passCond){
+      let totalTTL = randomInt(120,300)
+      ttlh.value = Math.floor(totalTTL/3600)
+      ttlm.value = Math.floor((totalTTL%3600)/60)
+      ttls.value = Math.floor(totalTTL%60)
+      readcnt.value = randomInt(1,3)
+      wpwdcnt.value = randomInt(3,5)
+      updatecnt.value = 0
+    }
+    else if(bankCond){
+      let totalTTL = randomInt(300,600)
+      ttlh.value = Math.floor(totalTTL/3600)
+      ttlm.value = Math.floor((totalTTL%3600)/60)
+      ttls.value = Math.floor(totalTTL%60)
+      readcnt.value = randomInt(1,3)
+      wpwdcnt.value = 3
+      updatecnt.value = 1
+    }
+    else if(idCond){
+      let totalTTL = randomInt(480,900)
+      ttlh.value = Math.floor(totalTTL/3600)
+      ttlm.value = Math.floor((totalTTL%3600)/60)
+      ttls.value = Math.floor(totalTTL%60)
+      readcnt.value = randomInt(2,5)
+      wpwdcnt.value = 5
+      updatecnt.value = 1
+    }
+    else if(emailCond){
+      let totalTTL = randomInt(720,1200)
+      ttlh.value = Math.floor(totalTTL/3600)
+      ttlm.value = Math.floor((totalTTL%3600)/60)
+      ttls.value = Math.floor(totalTTL%60)
+      readcnt.value = randomInt(2,5)
+      wpwdcnt.value = 5
+      updatecnt.value = 1
+    }
+    else if(usernameCond){
+      let totalTTL = randomInt(1200,1800)
+      ttlh.value = Math.floor(totalTTL/3600)
+      ttlm.value = Math.floor((totalTTL%3600)/60)
+      ttls.value = Math.floor(totalTTL%60)
+      readcnt.value = randomInt(6,10)
+      wpwdcnt.value = randomInt(10,15)
+      updatecnt.value = 2
+    }
+    else if(meetingCond){
+      let totalTTL = randomInt(2400,14400)
+      ttlh.value = Math.floor(totalTTL/3600)
+      ttlm.value = Math.floor((totalTTL%3600)/60)
+      ttls.value = Math.floor(totalTTL%60)
+      readcnt.value = randomInt(20,50)
+      wpwdcnt.value = randomInt(60,75)
+      updatecnt.value = randomInt(4,5)
+    }
+    else if(srcCond){
+      let totalTTL = randomInt(7200,21600)
+      ttlh.value = Math.floor(totalTTL/3600)
+      ttlm.value = Math.floor((totalTTL%3600)/60)
+      ttls.value = Math.floor(totalTTL%60)
+      readcnt.value = randomInt(10, 25)
+      wpwdcnt.value = randomInt(80,100)
+      updatecnt.value = randomInt(5,10)
+    }
+    else{
+      let totalTTL = 86399
+      ttlh.value = Math.floor(totalTTL/3600)
+      ttlm.value = Math.floor((totalTTL%3600)/60)
+      ttls.value = Math.floor(totalTTL%60)
+      readcnt.value = 0
+      wpwdcnt.value = 0
+      updatecnt.value = randomInt(100,150)
+    }
+  }
+}

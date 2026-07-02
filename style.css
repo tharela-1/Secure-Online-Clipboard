@@ -292,6 +292,14 @@ body{
     #showPwd2{
         width: 130px;
     }
+    #recommend-me-button:hover{
+      background-color: chocolate;
+      color: white;
+    }
+    #recommend-me-button{
+      font-family: monospace;
+      font-size: 16px;
+    }
     /*Disables the password view eye symbol from Microsoft Edge and Internet Explorer*/
     input::-ms-reveal{
         display: none;
