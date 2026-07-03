@@ -53,7 +53,7 @@ async function pwdHashing(password){
     Step - 6: Get the authTag and then return the message and the authTag
 */
 function randomIndex(){
-    return Math.floor(Math.random() * 4 + 0)
+    return Math.floor(Math.random() * 5 + 0)
 }
 function generateIV(){
     return crypto.randomBytes(12);
