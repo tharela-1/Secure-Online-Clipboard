@@ -91,6 +91,9 @@ body{
     #copy2:hover{
         background-color: yellow;
     }
+    #copy3:hover{
+        background-color: yellow;
+    }
     #feedback1:hover{
         background-color: lightblue;
     }
@@ -100,6 +103,9 @@ body{
     }
     #sendCode{
         color: green;
+    }
+    #revokeCode{
+        color: red;
     }
     .welcomeText{
         font-family: monospace;
@@ -212,6 +218,33 @@ body{
         background-color: green;
         color: white;
     }
+    #code3{
+        font-size: 16px;
+        font-family: monospace;
+    }
+    #code3:hover{
+        background-color: purple;
+        color: white;
+    }
+    #welcome3{
+        font-size: 16px;
+        font-family: monospace;
+    }
+    #welcome3:hover{
+        background-color: lightblue;
+    }
+    #feedback3{
+        font-size: 16px;
+        font-family: monospace;
+    }
+    #feedback3:hover{
+        background-color: green;
+        color: white;
+    }
+    #revoke-button:hover{
+      background-color: red;
+      color: white;
+    }
     /*Button animations
     1. Use the transform : scale(x) to get the size of the button to the x*100% size of the original size.
     2. Use opacity to set how light or solid the button is when pressed. 0 -> Light 1 -> Solid*/
@@ -264,10 +297,17 @@ body{
         background-color: orangered;
         color: white;
     }
+    #showPwd3:hover{
+        background-color: orangered;
+        color: white;
+    }
     #senderSectionComponent{
         display: block;
     }
     #receiverSectionComponent{
+        display: none;
+    }
+    #revokeSectionComponent{
         display: none;
     }
     .tabs{
@@ -286,10 +326,19 @@ body{
         font-size: 16px;
         font-family: monospace;
     }
+    #revokeTab{
+        width: 100px;
+        height: 50px;
+        font-size: 16px;
+        font-family: monospace;
+    }
     #showPwd1{
         width: 130px;
     }
     #showPwd2{
+        width: 130px;
+    }
+    #showPwd3{
         width: 130px;
     }
     #recommend-me-button:hover{

@@ -37,6 +37,11 @@ async function randomFn(){
     2. Password must be hashed
 */
 
+// Get 12 digit random integer
+function random12DigitInt(){
+  let val = Math.floor(Math.random()*900000000000)+100000000000
+  return val
+}
 // Password hashing
 async function pwdHashing(password){
     const hashval = await bcrypt.hash(password,Number(process.env.BUFFER_SALT_ROUNDS))
@@ -191,6 +196,7 @@ async function connectDB(){
                                 let encryptedObj = msgEncryption(data.Content, rIndex, iv)
                                 let encryptedMsg = encryptedObj.message
                                 let authTag = encryptedObj.authTag
+                                let revokeID = Number(random12DigitInt())
                                 await cb.insertOne({
                                     clipBoardID: Number(clipID),
                                     message: encryptedMsg,
@@ -205,13 +211,14 @@ async function connectDB(){
                                     expiresAt: new Date(Date.now()+Math.max(30,Number(data.expireSeconds))*1000),
                                     password: String(pwdHashed),
                                     keyIndex: Number(rIndex),
-                                    iv: ivstr
+                                    iv: ivstr,
+                                    revokeID: revokeID
                                 })
                                 // Analytics of number of clipboards generated is collected
                                 await ab.updateOne({param: "clipboardsGeneratedCount"},{$inc: {count: 1}}, {upsert: true})
                                 cond = false
                                 res.writeHead(200, {"Content-Type":"text/plain"})
-                                res.end(String(clipID))
+                                res.end(String(clipID)+" "+String(revokeID))
                             }
                             catch(err){
                                 console.log("Retrying...")
@@ -472,6 +479,52 @@ async function connectDB(){
                         }
                     }
                 })
+            }
+            else if(method === 'DELETE' && url==='/instantDelete'){
+              let body = ""
+              req.on('data',(chunk)=>{
+                body+=chunk
+              }) 
+              req.on('end',async()=> {
+                let data = querystring.parse(body)
+                try{
+                  let rec = await cb.findOne({clipBoardID: Number(data.clipID)})
+                  if(rec){
+                    let matchCheck = await bcrypt.compare(data.clipPass, rec.password)
+                    if(matchCheck){
+                      if(Number(data.revokeID) === rec.revokeID){
+                        let doc = await cb.findOneAndDelete({clipBoardID: Number(data.clipID), revokeID: Number(data.revokeID)})
+                        if(!doc){
+                          res.writeHead(400, {'Content-Type': 'text/plain'})
+                          res.end()
+                        }
+                        else{
+                          await ab.updateOne({param: "clipBoardDeletedBasedOnManualDeletion"},{$inc: {count: 1}}, {upsert: true})
+                          res.writeHead(200, {'Content-Type': 'text/plain'})
+                          res.end()
+                        }
+                      }
+                      else{
+                        res.writeHead(400, {'Content-Type': 'text/plain'})
+                        res.end()
+                      }
+                    }
+                    else{
+                      res.writeHead(400, {'Content-Type': 'text/plain'})
+                      res.end()
+                    }
+                  }
+                  else{
+                    
+                    res.writeHead(404, {'Content-Type': 'text/plain'})
+                    res.end()
+                  }
+                }
+                catch(err){
+                  res.writeHead(500,{'Content-Type':'text/plain'})
+                  res.end()
+                }
+              })
             }
             else{
                 res.writeHead(404, {"content-type": 'text/html'})

@@ -25,6 +25,7 @@
     <div class="tabs">
         <button onclick="showSenderSection()" class="actionObj" id="senderTab">Sender</button>
         <button onclick="showReceiverSection()" class="actionObj" id="receiverTab">Receiver</button>
+        <button onclick="showRevokeSection()" class="actionObj" id="revokeTab">Revoke</button>
     </div>
     <div class="container">
         <div class="field" id="senderSectionComponent">
@@ -176,8 +177,20 @@
                 <input type="number" class="listObj" 
                 placeholder="Get the Clipboard ID here"
                 readonly id="sendCode">
+                <br>
+                <button type="button" onclick = "copyFn2()" class="actionObj" id="copy2">Copy Clipboard ID</button>
+                <br><br>
+                <label for="sendCode" class="listObj">Your revoke ID is:
+                  <br>
+                  <b>NOTE: This ID is important if you want to do the Instant Deletion of your clipboard. 
+                    You can do that in the Revoke Tab.</b>
+                </label>
+                <br>
+                <input type="number" class="listObj" 
+                placeholder="Get the Clipboard ID here"
+                readonly id="revokeCode">
             </form>
-            <button onclick = "copyFn2()" class="actionObj" id="copy2">Copy Code</button>
+            <button onclick = "copyFn3()" class="actionObj" id="copy3">Copy Revoke ID</button>
             <br><br>
             <hr class="line">
             <div class="divSecHead">
@@ -277,6 +290,73 @@
             <br>
             <button onclick = "downloadTxtFile()" class="actionObj" id="write1">
                 Download Retrieved Text as Text File</button>
+            <br><br>
+            <hr class="line">
+            <div class="divSecHead">
+                <span class="secHead">Links</span>
+            </div>
+            <hr class="line">
+            <br>
+            <span class="heading">Send Feedback to the developer:</span>
+            <button class="actionObj" id="feedback3" onclick="window.location.href='/feedback';">Send Feedback</button>
+            <br>
+            <span class="heading">See the source code of this website:</span>
+            <button class="actionObj" id="code3" onclick="window.location.href='https://github.com/tharela-1/Secure-Online-Clipboard';">
+                Source Code</button>
+            <br>
+            <span class="heading">Go back to the Welcome Page:</span>
+            <button class="actionObj" id="welcome3" onclick="window.location.href='/welcome';">Welcome Page</button>
+            <br><br>
+            <span class="heading">By using this website you agree to the 
+                <a href="/help">Privacy Policy</a>, the <a href="/help">Terms of Service</a> and the <a href="/help">License Terms</a> 
+                of it.</span>
+            <br><br>
+        </div>
+        <div class="field" id="revokeSectionComponent">
+            <div class="divSecHead">
+                <span class="secHead">Revoke Section</span>
+            </div>
+            <hr class="line">
+            <span class="heading">NOTE: The fields marked with <span style="color: red">*</span> are required fields.
+            </span>
+            <br>
+            <hr class="line">
+            <form method="POST" onsubmit="revokeClipBoard(event)">
+                <label for="retCode" class = "listObj">Enter the clipboard ID(12 - digit)
+                    <span style="color: red">*</span></label>
+                <br>
+
+                <input name="retCode" type="number" required 
+                placeholder="Enter clipboard ID here" class="listObj" id="clipID2"></input>
+                <br><br>
+
+                <label for="retPass" class = "listObj">Enter the password (max 64 characters)
+                    <span style="color: red">*</span></label>
+                    <br>
+                    <b style="font-size: 14px;">NOTE: If you press the Show Password button 
+                        the password that you have typed is visible for 5.5 seconds. During the view time, editing 
+                        is disabled to prevent accidental changes. After that the password is hidden and you can edit again.
+                    </b>
+                <br>
+
+                <input name="retPass" type="password" required 
+                placeholder="Enter the password here" class="listObj" 
+                oninput= "if(this.value.length>64){this.value = this.value.slice(0,64)}"
+                id="clipPass2" maxlength="64">
+                </input>
+                <button type="button" onclick="showPassword3()" class="actionObj" id="showPwd3">Show Password</button>
+                <br>
+
+                <label for="revCode" class = "listObj">Enter the revoke ID(12 - digit)
+                    <span style="color: red">*</span></label>
+                <br>
+
+                <input name="revCode" type="number" required 
+                placeholder="Enter Revoke ID here" class="listObj" id="revokeID"></input>
+                <br><br>
+
+                <button class="actionObj" id="revoke-button">Instant Delete Clipboard</button>
+            </form>
             <br><br>
             <hr class="line">
             <div class="divSecHead">

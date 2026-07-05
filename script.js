@@ -46,7 +46,23 @@ async function copyFn2(){
         button.textContent = "Copied!"
 
         setTimeout( () => {
-            button.textContent = "Copy Code"
+            button.textContent = "Copy Clipboard ID"
+        }, 2500)
+    }
+    catch(err){
+        alert("Failed to copy:"+err)
+    }
+}
+async function copyFn3(){
+    let op = document.getElementById("revokeCode")
+    let val = op.value
+    try{
+        await navigator.clipboard.writeText(val)
+        let button = document.getElementById('copy3')
+        button.textContent = "Copied!"
+
+        setTimeout( () => {
+            button.textContent = "Copy Revoke ID"
         }, 2500)
     }
     catch(err){
@@ -110,9 +126,12 @@ only white spaces.")
             body: `Content=${encodeURIComponent(content)}&maxReadCount=${rkt}&expireSeconds=${ttl}&maxWrongPwdCount=${wpkt}&maxUpdateLimit=${upkt}&password=${encodeURIComponent(pwd)}`
         })
         const sCode = document.getElementById("sendCode")
-        sCode.value = await response.text()
-
+        const rCode = document.getElementById("revokeCode")
+        let value = await response.text()
         if(response.ok){
+          let valArray = value.split(" ")
+            sCode.value = valArray[0]
+            rCode.value = valArray[1]
             alert("Data sent successfully!!!\nThank you for using this website!")
         }
         else if(response.status===413){
@@ -120,6 +139,9 @@ only white spaces.")
         }
         else if(response.status===400){
             alert("Error 400 - Bad Request")
+        }
+        else if(response.status === 500){
+          alert("Error 500 - Internal Server Error")
         }
         else{
             alert("Connection Error")
@@ -247,29 +269,58 @@ function showPassword2(){
     if(button.textContent === "See Now"){
         return
     }
-    clipPass.type = "text"
+    sendPwd.type = "text"
     button.textContent = "See Now"
-    clipPass.disabled = true;
+    sendPwd.disabled = true;
     setTimeout( ()=> {
-        clipPass.type = "password"
+        sendPwd.type = "password"
         button.textContent = "Show Password"
-        clipPass.disabled = false;
+        sendPwd.disabled = false;
     }, 5500)
 }
-// Function for Tab Concept -- Show sender or receiver at one time
+
+function showPassword3(){
+    let button = document.getElementById("showPwd3")
+    let sendPwd = document.getElementById("clipPass2")
+
+    if(button.textContent === "See Now"){
+        return
+    }
+    sendPwd.type = "text"
+    button.textContent = "See Now"
+    sendPwd.disabled = true;
+    setTimeout( ()=> {
+        sendPwd.type = "password"
+        button.textContent = "Show Password"
+        sendPwd.disabled = false;
+    }, 5500)
+}
+
+// Function for Tab Concept -- Show sender, receiver or revoke tab at one time
 function showSenderSection(){
     let ssec = document.getElementById("senderSectionComponent")
     let rsec = document.getElementById("receiverSectionComponent")
+    let revsec = document.getElementById("revokeSectionComponent")
     ssec.style.display = "block"
     rsec.style.display = "none"
+    revsec.style.display = "none"
 }
 function showReceiverSection(){
     let ssec = document.getElementById("senderSectionComponent")
     let rsec = document.getElementById("receiverSectionComponent")
+    let revsec = document.getElementById("revokeSectionComponent")
     ssec.style.display = "none"
     rsec.style.display = "block"
+    revsec.style.display = "none"
 }
-
+function showRevokeSection(){
+    let ssec = document.getElementById("senderSectionComponent")
+    let rsec = document.getElementById("receiverSectionComponent")
+    let revsec = document.getElementById("revokeSectionComponent")
+    ssec.style.display = "none"
+    rsec.style.display = "none"
+    revsec.style.display = "block"
+}
 // Update clipboard function
 async function updateClipboard(){
     const clipID = Number(document.getElementById("clipID").value)
@@ -554,5 +605,26 @@ function recommendMe(){
       wpwdcnt.value = 0
       updatecnt.value = randomInt(100,150)
     }
+  }
+}
+
+// Instant delete feature
+async function revokeClipBoard(event){
+  event.preventDefault()
+  let clipID = document.getElementById("clipID2").value
+  let clipPass = document.getElementById("clipPass2").value
+  let revokeID = document.getElementById("revokeID").value
+
+  const response = await fetch("/instantDelete",{
+    method: "DELETE",
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+    body: `clipID=${clipID}&clipPass=${encodeURIComponent(clipPass)}&revokeID=${revokeID}`
+  })
+
+  if(response.ok){
+    alert("Clipboard Deleted Successfully!!")
+  }
+  else{
+    alert("Clipboard Deletion Failed!!")
   }
 }
