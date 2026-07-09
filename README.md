@@ -8,7 +8,7 @@ Database Used: MongoDB Atlas
 Deployment: This website is deployed on Railway.  
 Deployment URL: https://secure-online-clipboard-production.up.railway.app/  
 
-Project Timeline: May 14, 2026 - Jul 5, 2026 (for version 1.4.0)  
+Project Timeline: May 14, 2026 - Jul 10, 2026 (for version 1.4.1)  
 
 # Features:
 1. Each clipboard has a unique 12 - digit ID
@@ -33,6 +33,7 @@ Project Timeline: May 14, 2026 - Jul 5, 2026 (for version 1.4.0)
 20. Clipboards are automatically made inaccessible immediately after their expiry time, even though the deletion from the database may take some time.
 21. Layered Heuristic based Recommendation feature has been added in the sender section to give recommended values for the users for the TTL, maximum Read count, maximum wrong password count and maximum update count. Users can edit the recommended values as well according to their needs.
 22. Instant deletion of the clipboard feature has been given to let the users delete their clipboard immediately by using their clipboard ID, password and revoke ID. Race conditions in Revoke operations has been handled by using the atomic operations like findOneAndDelete().
+23. Users will get alert messages when the user's internet get disconnected and presses any button that involves connection with the database.
 
 # Versions:
 *Ver 1.0.0*: It is the basic version of the project. Only some of the features listed above are implemented. But user has to calculate the TTL in seconds and enter it. Users can enter upto 1000 characters per clipboard.  
@@ -60,6 +61,8 @@ Project Timeline: May 14, 2026 - Jul 5, 2026 (for version 1.4.0)
 *Ver 1.3.0*:  This is the twelfth version of this project. In this version Layered Heuristic based Recommendation feature (with a total of 9 layers) has been added in the sender section to give recommended values for the users for the TTL, maximum Read count, maximum wrong password count and maximum update count. Users can edit the recommended values as well according to their needs.
 
 *Ver 1.4.0*: This is the thirteenth version of this project. In this version, instant deletion of the clipboard feature has been implemented. Now when users generate a clipboard, they get 2 IDs. One is the clipboard ID and other is the revoke ID. Both IDs are of 12 digits only. To do the instant deletion of the clipboard users have to go to the Revoke Tab in the Clipboard Page and enter the clipboard ID, password and the revoke ID. If all the required details are found to be correct then the instant deletion of the clipboard takes place. Also Race conditions in Revoke operations has been handled by using the atomic operations like findOneAndDelete().
+
+*Ver 1.4.1*: This is the fourteenth version of this project. In this version, the issue of silent failing of the website when the user's internet get disconnected and presses any button that involves connection with the database has been resolved.
 
 # Limitations:
 1. Race conditions have not been handled for wrong password count during the update operations.
