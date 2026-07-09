@@ -5,7 +5,9 @@ const crypto = require('crypto')
 const mongodb = require('mongodb')
 const bcrypt = require('bcrypt')
 require('dotenv').config()
-const MongoClient = new mongodb.MongoClient(process.env.MONGO_URI)
+const MongoClient = new mongodb.MongoClient(process.env.MONGO_URI, {
+  serverSelectionTimeoutMS: 7500, connectTimeoutMS: 7500
+})
 
 /* Logic to generate the 12 - digit random number:
 
@@ -19,11 +21,12 @@ async function randomFn(){
     let rl = data.map((item) => {
         Number(item.clipBoardID)
     })
+    
     let cond = true
     let val;
     while(cond){
         val = Math.floor(Math.random()*900000000000)+100000000000
-        if(val in rl){
+        if(rl.includes(val)){ // Check whether value exists there
             cond = true
         }
         else{
@@ -108,7 +111,8 @@ async function connectDB(){
             if(url === '/'){
                 res.statusCode = 301 // Redirection to welcome page
                 res.setHeader('Location','/welcome')
-                return res.end()
+                res.end()
+                return
             }
             else if(url==='/welcome'){
                 res.writeHead(200, {"content-type": 'text/html'})
@@ -135,16 +139,19 @@ async function connectDB(){
                 fs.createReadStream('./feedback.html').pipe(res)
             }
             else if(method === 'POST' && url==='/sendFeedback'){
+              try{
                 let body = ""
                 req.on('data',(chunk)=>{
                     body+=chunk
                 })
                 req.on('end',async()=>{
+                  try{
                     const data = querystring.parse(body)
                     // Backend length verification for feedback
                     if(data.feedback.length>1000){
                         res.writeHead(413, {"Content-Type":"text/plain"})
                         res.end()
+                        return
                     }
                     else{
                         await fb.insertOne({
@@ -152,37 +159,55 @@ async function connectDB(){
                         })
                         res.writeHead(200, {"Content-Type":"text/plain"})
                         res.end()
-                    }
-                    
+                        return
+                    }  
+                  }
+                  catch(err){
+                    res.writeHead(500,{'content-type':'text/plain'})
+                    res.end()
+                    return
+                  }
                 })
+              }
+              catch(err){
+                res.writeHead(500,{'content-type':'text/plain'})
+                res.end()
+                return
+              }
             }
             // Sender Section
             else if(method==='POST' && url==="/sendClipboard"){
+              try{
                 let body = ""
                 req.on('data',(chunk)=>{
                     body+=chunk
                 })
                 req.on('end', async()=>{
+                  try{
                     let data = querystring.parse(body)
                     // Backend length and TTL Verification for sender's side
                     if(data.Content.length>2500 || data.password.length>64){
                         res.writeHead(413, {"Content-Type":"text/plain"})
                         res.end()
+                        return
                     }
                     else if(data.Content.length<0 || data.Content.trim().length===0 || data.password.length<=0 || 
                     Number(data.expireSeconds)>86399 ||  Number(data.expireSeconds)<0){
                         res.writeHead(400, {"Content-Type":"text/plain"})
                         res.end()
+                        return
                     }
                     else if(Number(data.maxReadCount)>2049 || Number(data.maxReadCount)<0 || 
                         Number(data.maxWrongPwdCount)>100 || Number(data.maxWrongPwdCount)<0 || Number(data.maxUpdateLimit)>2049 ||
                     Number(data.maxUpdateLimit)<0){
                         res.writeHead(400, {"Content-Type":"text/plain"})
                         res.end()
+                        return
                     }
                     else if(Number(data.maxUpdateLimit)>Number(data.maxReadCount) && Number(data.maxReadCount)>0){
                         res.writeHead(400, {"Content-Type":"text/plain"})
                         res.end()
+                        return
                     }
                     else{
                         let cond = true
@@ -219,27 +244,50 @@ async function connectDB(){
                                 cond = false
                                 res.writeHead(200, {"Content-Type":"text/plain"})
                                 res.end(String(clipID)+" "+String(revokeID))
+                                return
                             }
                             catch(err){
+                              if(err.code===11000){
                                 console.log("Retrying...")
+                              }
+                              else{
+                                res.writeHead(500, {"Content-Type":"text/plain"})
+                                res.end()
+                                return
+                              }
                             }
                         }
                     }
+                  }
+                  catch(err){
+                    res.writeHead(500, {"Content-Type":"text/plain"})
+                    res.end()
+                    return
+                  }
                 })
+              }
+              catch(err){
+                res.writeHead(500, {"Content-Type":"text/plain"})
+                res.end()
+                return
+              }
             }
             // Receiver's section
             else if(method==='POST' && url==='/retreiveClipboard'){
+              try{
                 let body = ""
                 req.on('data',(chunk)=>{
                     body+=chunk
                 })
                 req.on('end', async()=>{
+                  try{
                     let data = querystring.parse(body)
                     let clipID = Number(data.clipID)
                     let clipPass = String(data.clipPass)
                     if(data.clipID.length!=12 || clipPass.length>64){
                         res.writeHead(400,{"Content-Type":"text/plain"})
                         res.end()
+                        return
                     }
                     else{
                         const rl = []
@@ -250,6 +298,7 @@ async function connectDB(){
                             if(Date.now()>clipDoc.expiresAt){
                                 res.writeHead(410,{"Content-Type":"text/plain"})
                                 res.end()
+                                return
                             }
                             const matchCheck = await bcrypt.compare(clipPass, clipDoc.password)
                             if(matchCheck===true){
@@ -268,6 +317,7 @@ async function connectDB(){
                                         if(!clipDoc || clipDoc.readCount>clipDoc.maxReadCount){
                                             await cb.deleteOne({clipBoardID: clipID})
                                             res.end()
+                                            return
                                         }
                                         else if(clipDoc.readCount === clipDoc.maxReadCount){
                                             await ab.updateOne({param: "clipboardsReadCount"},
@@ -291,6 +341,7 @@ async function connectDB(){
                                             await ab.updateOne({param: "clipboardsDeletedBasedOnReadCount"},
                                                 {$inc: {count: 1}}, {upsert: true})
                                             res.end(decryptedMessage)
+                                            return
                                         }
                                         else{
                                             // Analytics of number of read count is collected
@@ -334,11 +385,14 @@ async function connectDB(){
                                             'hex','utf8')
                                         decryptedMessage+=decipherObj.final('utf8')
                                         res.end(decryptedMessage)
+                                        return
                                     }   
                                 }
                                 catch(err){
                                     console.log(err)
+                                    res.writeHead(500, 'text/plain')
                                     res.end()
+                                    return
                                 }
                             }
                             else{
@@ -365,23 +419,39 @@ async function connectDB(){
                                     }
                                 }
                                 res.end()
+                                return
                             }
                         }
                         else{
                             // If clipBoard ID is not found
                             res.writeHead(404, {'content-type':'text/plain'})
                             res.end()
+                            return
                         }
                     }
+                  }
+                  catch(err){
+                    res.writeHead(500, {'content-type':'text/plain'})
+                    res.end()
+                    return
+                  }
                 })
+              }
+              catch(err){
+                res.writeHead(500, {'content-type':'text/plain'})
+                res.end()
+                return
+
+              }
             }
             else if(method==="PATCH" && url==="/updateClipboard"){
-                
+              try{  
                 let body = ""
                 req.on('data',(chunk)=>{
                     body+=chunk
                 })
                 req.on('end', async()=>{
+                  try{
                     let data = querystring.parse(body)
                     let clipID = Number(data.clipID)
                     let clipPass = String(data.clipPass)
@@ -390,10 +460,12 @@ async function connectDB(){
                         data.clipID.length!=12 || clipPass.length<=0){
                         res.writeHead(400, {'content-type':'text/plain'})
                         res.end()
+                        return
                     }
                     else if(updateText.length>2500 || clipPass.length>64){
                         res.writeHead(413, {'content-type':'text/plain'})
                         res.end()
+                        return
                     }
                     else{
                         let rec = await cb.findOne({clipBoardID: clipID})
@@ -401,11 +473,13 @@ async function connectDB(){
                             if(Date.now()>rec.expiresAt){
                                 res.writeHead(410,{"Content-Type":"text/plain"})
                                 res.end()
+                                return
                             }
                             else if(rec.updateCount>=rec.maxUpdateLimit){
                                 // If update limit exceeded or clipboard is read-only
                                 res.writeHead(403, {'content-type':'text/plain'})
                                 res.end()
+                                return
                             }
                             // Compare whether password mathces or not
                             else{
@@ -426,6 +500,7 @@ async function connectDB(){
                                     if(!rec || rec.updateCount>rec.maxUpdateLimit){
                                         res.writeHead(400,{"content-type": "text/plain"})
                                         res.end()
+                                        return
                                     }
                                     else{
                                         // Do the updation work
@@ -442,6 +517,7 @@ async function connectDB(){
                                             {$inc: {count: 1}}, {upsert: true})
                                         // Send normal end
                                         res.end()
+                                        return
                                         }
                                 }
                                 else{
@@ -456,6 +532,7 @@ async function connectDB(){
                                                 {$inc: {count: 1}}, {upsert: true})
                                             res.writeHead(400, {'content-type':'text/plain'})
                                             res.end()
+                                            return
                                         }
                                         else{
                                             await cb.updateOne({clipBoardID: clipID},
@@ -463,11 +540,13 @@ async function connectDB(){
                                             })
                                             res.writeHead(400, {'content-type':'text/plain'})
                                             res.end()
+                                            return
                                         }
                                     }
                                     else{
                                         res.writeHead(400, {'content-type':'text/plain'})
                                         res.end()
+                                        return
                                     }
                                 }
                             }
@@ -476,55 +555,81 @@ async function connectDB(){
                             // If clipBoard ID is not found
                             res.writeHead(404, {'content-type':'text/plain'})
                             res.end()
+                            return
                         }
                     }
+                  }
+                  catch(err){
+                    res.writeHead(500, {'Content-Type':'text/plain'})
+                    res.end()
+                    return
+                  }
                 })
+              }
+              catch(err){
+                res.writeHead(500, {'Content-Type':'text/plain'})
+                res.end()
+                return
+              }
             }
             else if(method === 'DELETE' && url==='/instantDelete'){
-              let body = ""
-              req.on('data',(chunk)=>{
-                body+=chunk
-              }) 
-              req.on('end',async()=> {
-                let data = querystring.parse(body)
-                try{
-                  let rec = await cb.findOne({clipBoardID: Number(data.clipID)})
-                  if(rec){
-                    let matchCheck = await bcrypt.compare(data.clipPass, rec.password)
-                    if(matchCheck){
-                      if(Number(data.revokeID) === rec.revokeID){
-                        let doc = await cb.findOneAndDelete({clipBoardID: Number(data.clipID), revokeID: Number(data.revokeID)})
-                        if(!doc){
-                          res.writeHead(400, {'Content-Type': 'text/plain'})
-                          res.end()
+              try{
+                let body = ""
+                req.on('data',(chunk)=>{
+                  body+=chunk
+                }) 
+                req.on('end',async()=> {
+                  try{
+                    let data = querystring.parse(body)
+                    let rec = await cb.findOne({clipBoardID: Number(data.clipID)})
+                    if(rec){
+                      let matchCheck = await bcrypt.compare(data.clipPass, rec.password)
+                      if(matchCheck){
+                        if(Number(data.revokeID) === rec.revokeID){
+                          let doc = await cb.findOneAndDelete({clipBoardID: Number(data.clipID), revokeID: Number(data.revokeID)})
+                          if(!doc){
+                            res.writeHead(400, {'Content-Type': 'text/plain'})
+                            res.end()
+                            return
+                          }
+                          else{
+                            await ab.updateOne({param: "clipBoardDeletedBasedOnManualDeletion"},{$inc: {count: 1}}, {upsert: true})
+                            res.writeHead(200, {'Content-Type': 'text/plain'})
+                            res.end()
+                            return
+                          }
                         }
                         else{
-                          await ab.updateOne({param: "clipBoardDeletedBasedOnManualDeletion"},{$inc: {count: 1}}, {upsert: true})
-                          res.writeHead(200, {'Content-Type': 'text/plain'})
+                          res.writeHead(400, {'Content-Type': 'text/plain'})
                           res.end()
+                          return
                         }
                       }
                       else{
                         res.writeHead(400, {'Content-Type': 'text/plain'})
                         res.end()
+                        return
                       }
                     }
                     else{
-                      res.writeHead(400, {'Content-Type': 'text/plain'})
+                      
+                      res.writeHead(404, {'Content-Type': 'text/plain'})
                       res.end()
+                      return
                     }
                   }
-                  else{
-                    
-                    res.writeHead(404, {'Content-Type': 'text/plain'})
+                  catch(err){
+                    res.writeHead(500,{'Content-Type':'text/plain'})
                     res.end()
+                    return
                   }
-                }
-                catch(err){
-                  res.writeHead(500,{'Content-Type':'text/plain'})
-                  res.end()
-                }
-              })
+                })
+              }
+              catch(err){
+                res.writeHead(500, {'content-type':'text/plain'})
+                res.end()
+                return
+              }
             }
             else{
                 res.writeHead(404, {"content-type": 'text/html'})

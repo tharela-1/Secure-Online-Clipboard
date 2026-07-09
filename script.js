@@ -20,7 +20,8 @@ updateContent.addEventListener('input', () => {
         charCount2.innerHTML = "<b><span class='listObj' style='color: red'>" + updateContent.value.length + " / 2500 characters</span></b>";
     }
 })
-// Function for 'Copy Retrieved Text' and 'Copy Code' buttons to copy text in the output text area to clipboard
+// Function for 'Copy Retrieved Text' and 'Copy clipboard id' and 'Copy revoke id' buttons to copy text 
+// in the output text area to clipboard
 async function copyFn(){
     let op = document.getElementById("output")
     let val = op.value
@@ -71,29 +72,40 @@ async function copyFn3(){
 }
 // Send Feedback to the developer -- Feedback Page Interface with Node.js
 async function sendFeedback(event){
-    event.preventDefault();
-
-    const fdb = document.getElementById('feedback')
-    let value = fdb.value
-    
-    const response = await fetch('/sendFeedback', {
-        method: "POST",
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: `feedback=${encodeURIComponent(value)}`
-    })
-    if(response.ok){
-        alert("Feedback sent successfully! Thank you for your valuable feedback!")
-        fdb.value = ""
+  // If internet failed need try catch block
+    try{
+      event.preventDefault();  
+      const fdb = document.getElementById('feedback')
+      let value = fdb.value
+      
+      const response = await fetch('/sendFeedback', {
+          method: "POST",
+          headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: `feedback=${encodeURIComponent(value)}`
+      })
+      if(response.ok){
+          alert("Feedback sent successfully! Thank you for your valuable feedback!")
+          fdb.value = ""
+      }
+      else if(response.status === 500){
+        // To handle if DB is unavailable
+        alert("Error 500 - Some DB or Server error might have occurred. Please try later.\
+\nAlso please check your internet connection!")
+      }
+      else{
+          alert("Error 413 - Payload Too Large")
+      }
     }
-    else{
-        alert("Error 413 - Payload Too Large")
+    catch(err){
+      alert("Network error! Please Check your internet connection!")
     }
 }
 
 // Send Clipboard Content -- Home Page Sender Section interface with Node.js
 async function sendClipBoard(event){
+  try{
     event.preventDefault();
     const content = document.getElementById("sendContent").value
     const pwd = document.getElementById("sendPassword").value
@@ -141,16 +153,22 @@ only white spaces.")
             alert("Error 400 - Bad Request")
         }
         else if(response.status === 500){
-          alert("Error 500 - Internal Server Error")
+          alert("Error 500 - Some DB or Server error might have occurred. Please try later.\
+\nAlso please check your internet connection!")
         }
         else{
             alert("Connection Error")
         }
     }
+  }
+  catch(err){
+    alert("Network error! Please Check your internet connection!")
+  }
 }
 // Retrieve Clipboard Content -- Home Page Receiver Section interface with Node.js
 
 async function retreiveClipBoard(event){
+  try{
     event.preventDefault();
     const clipID = Number(document.getElementById("clipID").value)
     const clipPass = document.getElementById("clipPass").value
@@ -190,6 +208,11 @@ Thank you!!!")
         alert("Error 400 - Bad Request")
         resText.value = ""
     }
+    else if(response.status === 500){
+      alert("Error 500 - Some DB or Server error might have occurred. Please try later.\
+\nAlso please check your internet connection!")
+      resText.value = ""
+    }
     else{
         alert("Clipboard ID or password may be invalid or the Clipboard \
 you are searching for might have got expired or the maximum read count \
@@ -206,6 +229,10 @@ Sorry for the inconvinience!!!\n\
 Thank you!!!")
         resText.value=""
     }
+  }
+  catch(err){
+    alert("Network error! Please Check your internet connection!")
+  }
 }
 
 function downloadTxtFile(){
@@ -323,6 +350,7 @@ function showRevokeSection(){
 }
 // Update clipboard function
 async function updateClipboard(){
+  try{
     const clipID = Number(document.getElementById("clipID").value)
     const clipPass = document.getElementById("clipPass").value
     const updateText = document.getElementById("updateContent").value
@@ -341,10 +369,18 @@ Thanks for using this website!!")
     else if(response.status==400){
         alert("Error 400 - Bad Request")
     }
+    else if(response.status === 500){
+      alert("Error 500 - Some DB or Server error might have occurred. Please try later.\
+\nAlso please check your internet connection!")
+    }
     else{
         alert("Update Failed.\n\
 The update limit may be exhausted or the clipboard ID might have been set read-only or the clipboard ID may not exist.")
     }
+  }
+  catch(err){
+    alert("Network error! Please Check your internet connection!")
+  }
 }
 // Recommend TTL, Read count, Wrong password count, Update Count using heuristic based approach
 
@@ -610,21 +646,30 @@ function recommendMe(){
 
 // Instant delete feature
 async function revokeClipBoard(event){
-  event.preventDefault()
-  let clipID = document.getElementById("clipID2").value
-  let clipPass = document.getElementById("clipPass2").value
-  let revokeID = document.getElementById("revokeID").value
+  try{
+    event.preventDefault()
+    let clipID = document.getElementById("clipID2").value
+    let clipPass = document.getElementById("clipPass2").value
+    let revokeID = document.getElementById("revokeID").value
 
-  const response = await fetch("/instantDelete",{
-    method: "DELETE",
-    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-    body: `clipID=${clipID}&clipPass=${encodeURIComponent(clipPass)}&revokeID=${revokeID}`
-  })
+    const response = await fetch("/instantDelete",{
+      method: "DELETE",
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: `clipID=${clipID}&clipPass=${encodeURIComponent(clipPass)}&revokeID=${revokeID}`
+    })
 
-  if(response.ok){
-    alert("Clipboard Deleted Successfully!!")
+    if(response.ok){
+      alert("Clipboard Deleted Successfully!!")
+    }
+    else if(response.status === 500){
+      alert("Error 500 - Some DB or Server error might have occurred. Please try later. \
+\nAlso please check your internet connection!")
+    }
+    else{
+      alert("Clipboard Deletion Failed!!")
+    }
   }
-  else{
-    alert("Clipboard Deletion Failed!!")
+  catch(err){
+    alert("Network error! Please Check your internet connection!")
   }
 }
