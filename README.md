@@ -62,7 +62,7 @@ Project Timeline: May 14, 2026 - Jul 10, 2026 (for version 1.4.1)
 
 *Ver 1.4.0*: This is the thirteenth version of this project. In this version, instant deletion of the clipboard feature has been implemented. Now when users generate a clipboard, they get 2 IDs. One is the clipboard ID and other is the revoke ID. Both IDs are of 12 digits only. To do the instant deletion of the clipboard users have to go to the Revoke Tab in the Clipboard Page and enter the clipboard ID, password and the revoke ID. If all the required details are found to be correct then the instant deletion of the clipboard takes place. Also Race conditions in Revoke operations has been handled by using the atomic operations like findOneAndDelete().
 
-*Ver 1.4.1*: This is the fourteenth version of this project. In this version, the issue of silent failing of the website when the user's internet get disconnected and presses any button that involves connection with the database has been resolved.
+*Ver 1.4.1*: This is the fourteenth version of this project. In this version, the issue of silent failing of the website when the user's internet get disconnected and presses any button that involves connection with the database has been resolved. Server selection Timeout and connect Timeout have been set at a limit of 7500 ms i.e., 7.5 sec. This is to prevent prolonged waits when the database is not reachable.
 
 # Limitations:
 1. Race conditions have not been handled for wrong password count during the update operations.
