@@ -79,7 +79,7 @@ async function copyFn4(){
         button.textContent = "Copied!"
 
         setTimeout( () => {
-            button.textContent = "Copy Revoke ID"
+            button.textContent = "Copy Owner ID"
         }, 2500)
     }
     catch(err){
