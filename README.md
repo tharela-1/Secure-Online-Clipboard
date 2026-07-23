@@ -8,7 +8,7 @@ Database Used: MongoDB Atlas
 Deployment: This website is deployed on Railway.  
 Deployment URL: https://secure-online-clipboard-production.up.railway.app/  
 
-Project Timeline: May 14, 2026 - Jul 10, 2026 (for version 1.4.1)  
+Project Timeline: May 14, 2026 - Jul 24, 2026 (for version 1.5.0)  
 
 # Features:
 1. Each clipboard has a unique 12 - digit ID
@@ -24,16 +24,17 @@ Project Timeline: May 14, 2026 - Jul 10, 2026 (for version 1.4.1)
 11. Even though the user sets a TTL of less than 30 seconds, the minimum TTL has been set to 30 seconds to give a meaningful lifecycle for the generated clipboard.
 12. There is a feedback page to tell the feedback to the developer
 13. Help Page to understand how to use this website and see the Privacy Policy and Terms of Service of this website
-14. Users can copy the generated clipboard ID and the retreived content to the clipboard in the computer
+14. Users can copy the generated clipboard ID, revoke ID, owner ID and the retreived content to the clipboard in the computer
 15. Users can download the retreived content as a text file (.txt file)
 16. Welcome Page and Page Not Found Page are also present
 17. Tab System is used in the clipboard page to have a clean UI layout - This helps avoiding long website in case of mobile view and having a clear layout and avoids lot of text in the same window in case of a desktop view
-18. Basic anonymous usage analytics such as Number of clipboards generated, Number of reads, Number of updates, Number of clipboards deleted based on read count and wrong password attempts count to improve the reliability and performance of this website.
+18. Basic anonymous usage analytics such as Number of clipboards generated, Number of reads, Number of updates, Number of clipboards deleted based on read count and wrong password attempts count and Number of clipboards deleted based on manual deletion to improve the reliability and performance of this website.
 19. Concurrency handling has been implemented in read operations for read count based deletion and wrong password count based deletion and this concurrency handling has been implemented in update operations for update count using MongoDB atomic functions like findOneAndUpdate(). Also race condition for clipboard ID has been handled by giving unique indexing for clipboard ID column and using a while loop and exception handling mechanism to ensure that unique clipboard IDs are generated properly.
 20. Clipboards are automatically made inaccessible immediately after their expiry time, even though the deletion from the database may take some time.
 21. Layered Heuristic based Recommendation feature has been added in the sender section to give recommended values for the users for the TTL, maximum Read count, maximum wrong password count and maximum update count. Users can edit the recommended values as well according to their needs.
 22. Instant deletion of the clipboard feature has been given to let the users delete their clipboard immediately by using their clipboard ID, password and revoke ID. Race conditions in Revoke operations has been handled by using the atomic operations like findOneAndDelete().
 23. Users will get alert messages when the user's internet get disconnected and presses any button that involves connection with the database.
+24. The owner of the clipboard can see the message and the meta data of the website by going to the owner tab and entering the clipboard ID, password and owner ID. If all these are found to be correct then the owner can see the message and meta data of the clipboard but not password and encryption related details. Here also the race condition has been handled for wrong password attempts using MongoDB atomic operations findOneAndUpdate().
 
 # Versions:
 *Ver 1.0.0*: It is the basic version of the project. Only some of the features listed above are implemented. But user has to calculate the TTL in seconds and enter it. Users can enter upto 1000 characters per clipboard.  
@@ -62,7 +63,9 @@ Project Timeline: May 14, 2026 - Jul 10, 2026 (for version 1.4.1)
 
 *Ver 1.4.0*: This is the thirteenth version of this project. In this version, instant deletion of the clipboard feature has been implemented. Now when users generate a clipboard, they get 2 IDs. One is the clipboard ID and other is the revoke ID. Both IDs are of 12 digits only. To do the instant deletion of the clipboard users have to go to the Revoke Tab in the Clipboard Page and enter the clipboard ID, password and the revoke ID. If all the required details are found to be correct then the instant deletion of the clipboard takes place. Also Race conditions in Revoke operations has been handled by using the atomic operations like findOneAndDelete().
 
-*Ver 1.4.1*: This is the fourteenth version of this project. In this version, the issue of silent failing of the website when the user's internet get disconnected and presses any button that involves connection with the database has been resolved. Server selection Timeout and connect Timeout have been set at a limit of 7500 ms i.e., 7.5 sec. This is to prevent prolonged waits when the database is not reachable.
+*Ver 1.4.1*: This is the fourteenth version of this project. In this version, the issue of silent failing of the website when the user's internet get disconnected and presses any button that involves connection with the database has been resolved. Server selection Timeout and connect Timeout have been set at a limit of 7500 ms i.e., 7.5 sec. This is to prevent prolonged waits when the database is not reachable.  
+
+*Ver 1.5.0*: This is the fifteenth version of this project. In this version, a new feature of owner managing message and meta data has been added. i.e., whenever a clipboard is created here after the user gets 3 IDs. One is the clipboard ID, the second is the revoke ID and the third is the owner ID. The owner can see all the details of the clipboard except the password and the encryption data stored like authTag, iv etc., but he can see all the details related to the message, TTL, read count, wrong password attempt count, update count and revoke id details. Also the wrong password attempts if any done to see the owner's details that are also counted towards wrong password attempts. This is applicable only if clipboard ID and the owner ID both are found to be correct. Race conditions have been handled in the wrong password attempt count using MongoDB atomic operattions findOneAndUpdate(). The owner can only view the message and the meta data of the clipboard by using the Owner Tab.  
 
 # Limitations:
 1. Race conditions have not been handled for wrong password count during the update operations.
