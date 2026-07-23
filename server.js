@@ -95,7 +95,8 @@ async function connectDB(){
             2. Number of reads done
             3. Number of updates done
             4. Number of clipboards deleted based on read count
-            5. Number of clipboards deleted based on wrong password count*/
+            5. Number of clipboards deleted based on wrong password count
+            6. Number of manual deletions done*/
         const adb = MongoClient.db("Analytics")
         const ab = adb.collection("analytics")
         // setting up the TTL index and the index based on clipboard ID
@@ -222,6 +223,7 @@ async function connectDB(){
                                 let encryptedMsg = encryptedObj.message
                                 let authTag = encryptedObj.authTag
                                 let revokeID = Number(random12DigitInt())
+                                let ownerID = Number(random12DigitInt())
                                 await cb.insertOne({
                                     clipBoardID: Number(clipID),
                                     message: encryptedMsg,
@@ -237,13 +239,14 @@ async function connectDB(){
                                     password: String(pwdHashed),
                                     keyIndex: Number(rIndex),
                                     iv: ivstr,
-                                    revokeID: revokeID
+                                    revokeID: revokeID,
+                                    ownerID: ownerID
                                 })
                                 // Analytics of number of clipboards generated is collected
                                 await ab.updateOne({param: "clipboardsGeneratedCount"},{$inc: {count: 1}}, {upsert: true})
                                 cond = false
                                 res.writeHead(200, {"Content-Type":"text/plain"})
-                                res.end(String(clipID)+" "+String(revokeID))
+                                res.end(String(clipID)+" "+String(revokeID)+" "+String(ownerID))
                                 return
                             }
                             catch(err){
@@ -620,6 +623,121 @@ async function connectDB(){
                   }
                   catch(err){
                     res.writeHead(500,{'Content-Type':'text/plain'})
+                    res.end()
+                    return
+                  }
+                })
+              }
+              catch(err){
+                res.writeHead(500, {'content-type':'text/plain'})
+                res.end()
+                return
+              }
+            }
+            else if(method === "POST" && url === "/getOwnerDetails"){
+              try{
+                let body = ""
+                req.on("data", (chunk)=>{
+                  body+=chunk
+                })
+                req.on("end", async()=>{
+                  try{
+                    let data = querystring.parse(body)
+                    let clipID = data.clipID
+                    let clipPass = data.clipPass
+                    let ownerID = data.ownerID
+                    if(!clipID || !clipPass || !ownerID || clipID.length!=12 || ownerID.length!=12){
+                      res.writeHead(400, {'content-type':'text/plain'})
+                      res.end()
+                      return
+                    }
+                    else if(clipPass.length<=0 || clipPass.length>64){
+                      res.writeHead(400, {'content-type':'text/plain'})
+                      res.end()
+                      return
+                    }
+                    else{
+                      // Check whether the document exists with the clipboard id
+                      let rec = await cb.findOne({clipBoardID: Number(clipID)})
+                      if(rec){
+                        if(Number(ownerID) === rec.ownerID){
+                          // owner ID matched
+                          let matchCheck = await bcrypt.compare(clipPass, rec.password)
+                          if(matchCheck){
+                            // Password is correct so we can proceed with the decryption of message
+                            const keyList = [process.env.AES_KEY_1, process.env.AES_KEY_2,
+                                                process.env.AES_KEY_3, process.env.AES_KEY_4, 
+                                                process.env.AES_KEY_5]
+                            let keyChosen = Buffer.from(keyList[rec.keyIndex], 'hex')
+                            let authTagGot = Buffer.from(rec.authTag, 'hex')
+                            let ivNeeded = Buffer.from(rec.iv,'hex')
+                            let encryptedMessage = rec.message
+
+                            const decipherObj = crypto.createDecipheriv('aes-256-gcm',keyChosen,ivNeeded)
+                            decipherObj.setAuthTag(authTagGot)
+                            let decryptedMessage = decipherObj.update(encryptedMessage,'hex','utf8')
+                            decryptedMessage+=decipherObj.final('utf8')
+
+                            // Now we have got the decrypted message
+                            // Let's make the needed JSON format and send it to the frontend JS
+
+                            let neededJSON = {
+                              clipBoardID: rec.clipBoardID,
+                              message: decryptedMessage,
+                              expireSeconds: rec.expireSeconds,
+                              expiresAt: rec.expiresAt,
+                              readCount: rec.readCount,
+                              maxReadCount: rec.maxReadCount,
+                              wrongPwdCount: rec.wrongPwdCount,
+                              maxWrongPwdCount: rec.maxWrongPwdCount,
+                              updateCount: rec.updateCount,
+                              maxUpdateLimit: rec.maxUpdateLimit,
+                              revokeID: rec.revokeID,
+                              ownerID: rec.ownerID
+                            }
+                            res.writeHead(200, {'content-type':'application/json'})
+                            res.end(JSON.stringify(neededJSON))
+                            return
+                          }
+                          else{
+                            // Password Mismatched
+                            if(rec.maxWrongPwdCount>0){
+                              // The owner has said to allow only specific number of wrong password attempts not unlimited
+                              // Use of atomic operations to handle the race conditions
+                              rec = await cb.findOneAndUpdate({clipBoardID: Number(clipID), 
+                                        wrongPwdCount: {$lt: rec.maxWrongPwdCount}},
+                                        {$inc: {wrongPwdCount: 1}}, {returnDocument: "after"})
+                              if(!rec){
+                                cb.deleteOne({clipBoardID: Number(clipID)})
+                              }
+                              else if(rec.wrongPwdCount === rec.maxWrongPwdCount){
+                                await cb.deleteOne({clipBoardID: clipID})
+                                await ab.updateOne({param: "clipboardsDeletedBasedOnWrongPasswordCount"},
+                                            {$inc: {count: 1}}, {upsert: true})
+                              }
+                            }
+                            res.writeHead(400, {'content-type':'text/plain'})
+                            res.end()
+                            return
+                          }
+                        }
+                        else{
+                          // owner ID mismatched
+                          res.writeHead(400, {'content-type':'text/plain'})
+                          res.end()
+                          return
+                        }
+                      }
+                      else{
+                        // Record not found
+                        res.writeHead(404, {'content-type':'text/plain'})
+                        res.end()
+                        return
+                      }
+                    }
+                  }
+                  catch(err){
+                    res.writeHead(500, {'content-type':'text/plain'})
                     res.end()
                     return
                   }

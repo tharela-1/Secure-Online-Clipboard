@@ -26,6 +26,7 @@
         <button onclick="showSenderSection()" class="actionObj" id="senderTab">Sender</button>
         <button onclick="showReceiverSection()" class="actionObj" id="receiverTab">Receiver</button>
         <button onclick="showRevokeSection()" class="actionObj" id="revokeTab">Revoke</button>
+        <button onclick="showOwnerSection()" class="actionObj" id="ownerTab">Owner</button>
     </div>
     <div class="container">
         <div class="field" id="senderSectionComponent">
@@ -176,11 +177,11 @@
                 <br>
                 <input type="number" class="listObj" 
                 placeholder="Get the Clipboard ID here"
-                readonly id="sendCode">
+                readonly id="sendCode" name="sendCode">
                 <br>
                 <button type="button" onclick = "copyFn2()" class="actionObj" id="copy2">Copy Clipboard ID</button>
                 <br><br>
-                <label for="sendCode" class="listObj">Your revoke ID is:
+                <label for="revokeCode" class="listObj">Your revoke ID is:
                   <br>
                   <b>NOTE: This ID is important if you want to do the Instant Deletion of your clipboard. 
                     You can do that in the Revoke Tab.</b>
@@ -188,9 +189,21 @@
                 <br>
                 <input type="number" class="listObj" 
                 placeholder="Get the Revoke ID here"
-                readonly id="revokeCode">
+                readonly id="revokeCode" name="revokeCode">
+                <br>
+                <button type = "button" onclick = "copyFn3()" class="actionObj" id="copy3">Copy Revoke ID</button>
+                <br><br>
+                <label for="ownerCode" class="listObj">Your owner ID is:
+                  <br>
+                  <b>NOTE: This ID is important if you want to see the message and meta data of your clipboard. 
+                    You can do that in the Owner tab.</b>
+                </label>
+                <br>
+                <input type="number" class="listObj" 
+                placeholder="Get the Owner ID here"
+                readonly id="ownerCode" name="ownerCode">
             </form>
-            <button onclick = "copyFn3()" class="actionObj" id="copy3">Copy Revoke ID</button>
+            <button onclick = "copyFn4()" class="actionObj" id="copy4">Copy Owner ID</button>
             <br><br>
             <hr class="line">
             <div class="divSecHead">
@@ -379,7 +392,194 @@
                 of it.</span>
             <br><br>
         </div>
-    </div>
+        <div class="field" id="ownerSectionComponent">
+            <div class="divSecHead">
+                <span class="secHead">Owner Section</span>
+            </div>
+            <hr class="line">
+            <div class="tabs">
+              <button onclick="showLoginSection()" class="actionObj" id="loginTab">Login</button>
+              <button onclick="showResultSection()" class="actionObj" id="resultTab">Result</button>
+            </div>
+            <div class="field" id="loginSectionComponent">
+              <div class="divSecHead">
+                <span class="secHead">Login Tab</span>
+              </div>
+              <hr class="line">
+              <span class="heading">NOTE: The fields marked with <span style="color: red">*</span> are required fields.
+              <br>
+              <hr class="line">
+              <!---Code Continues -->
+              <form method="POST" onsubmit="ownerOfClipBoard(event)">
+                <label for="retCode" class = "listObj">Enter the clipboard ID(12 - digit)
+                    <span style="color: red">*</span></label>
+                <br>
+
+                <input name="retCode" type="number" required 
+                placeholder="Enter clipboard ID here" class="listObj" id="clipID3"></input>
+                <br><br>
+
+                <label for="retPass" class = "listObj">Enter the password (max 64 characters)
+                    <span style="color: red">*</span></label>
+                    <br>
+                    <b style="font-size: 14px;">NOTE: If you press the Show Password button 
+                        the password that you have typed is visible for 5.5 seconds. During the view time, editing 
+                        is disabled to prevent accidental changes. After that the password is hidden and you can edit again.
+                    </b>
+                <br>
+
+                <input name="retPass" type="password" required 
+                placeholder="Enter the password here" class="listObj" 
+                oninput= "if(this.value.length>64){this.value = this.value.slice(0,64)}"
+                id="clipPass3" maxlength="64">
+                </input>
+                <button type="button" onclick="showPassword4()" class="actionObj" id="showPwd4">Show Password</button>
+                <br><br>
+
+                <label for="ownerCode" class = "listObj">Enter the owner ID(12 - digit)
+                    <span style="color: red">*</span></label>
+                <br>
+
+                <input name="ownerCode" type="number" required 
+                placeholder="Enter Owner ID here" class="listObj" id="ownerID"></input>
+                <br><br>
+
+                <button class="actionObj" id="owner-button">See Clipboard Details</button>
+              </form>
+              <br><br>
+              <hr class="line">
+              <div class="divSecHead">
+                  <span class="secHead">Links</span>
+              </div>
+              <hr class="line">
+              <br>
+              <span class="heading">Send Feedback to the developer:</span>
+              <button class="actionObj" id="feedback4" onclick="window.location.href='/feedback';">Send Feedback</button>
+              <br>
+              <span class="heading">See the source code of this website:</span>
+              <button class="actionObj" id="code4" onclick="window.location.href='https://github.com/tharela-1/Secure-Online-Clipboard';">
+                  Source Code</button>
+              <br>
+              <span class="heading">Go back to the Welcome Page:</span>
+              <button class="actionObj" id="welcome4" onclick="window.location.href='/welcome';">Welcome Page</button>
+              <br><br>
+              <span class="heading">By using this website you agree to the 
+                  <a href="/help">Privacy Policy</a>, the <a href="/help">Terms of Service</a> and the <a href="/help">License Terms</a> 
+                  of it.</span>
+              <br><br>
+            </div>
+            <div class="field" id="resultSectionComponent">
+              <div class="divSecHead">
+                <span class="secHead">Result Tab</span>
+              </div>
+              <hr class="line">
+              <label for="showClipID" class = "listObj">The clipboard ID is:</label>
+              <br>
+              <input name="showClipID" type="number" readonly 
+              placeholder="Get clipboard ID here" class="listObj" id="showClipID"></input>
+              <br><br>
+
+              <label for="showClipMsg" class = "listObj">The message is:</label>
+              <br>
+              <textarea readonly name="showClipMsg" 
+                class = "longListObj" rows="11" cols="88" maxlength="2500"
+                oninput= "if(this.value.length>2500){this.value = this.value.slice(0,2500)}"
+                placeholder="Enter Text here" id="showClipMsg"></textarea>
+              <br><br>
+
+              <label for="showTTL" class = "listObj">The clipboard's lifetime(in seconds) is:</label>
+              <br>
+              <input name="showTTL" type="number" readonly 
+              placeholder="Get clipboard TTL here" class="listObj" id="showClipTTL"></input>
+              <br><br>
+
+              <label for="showClipDate" class = "listObj">The clipboard expires At: (The shown time will be in UTC Time Zone)</label>
+              <br>
+              <input name="showClipDate" type="text" readonly 
+              placeholder="Get clipboard Expiration date and time here" class="listObj" id="showClipDate"></input>
+              <br><br>
+
+              <label for="showClipRC" class = "listObj">The clipboard has been read for the following number of times: (will show 
+                0 if the max Read count count limit value is set to unlimited i.e., 0 has been entered for this field 
+                while creating the clipboard)</label>
+              <br>
+              <input name="showClipRC" type="number" readonly 
+              placeholder="Get clipboard Read count here" class="listObj" id="showClipRC"></input>
+              <br><br>
+
+              <label for="showClipMRC" class = "listObj">The clipboard allows read operation for the following number of times: (will show 
+                0 if the max Read count count limit value is set to unlimited i.e., 0 has been entered for this field 
+                while creating the clipboard)</label>
+              <br>
+              <input name="showClipMRC" type="number" readonly 
+              placeholder="Get clipboard Max Read Count limit here" class="listObj" id="showClipMRC"></input>
+              <br><br>
+
+              <label for="showClipWPC" class = "listObj">The clipboard received wrong password for 
+                the following number of times: (will show 
+                0 if the max Wrong Password count limit value is set to unlimited i.e., 0 has been entered for this field 
+                while creating the clipboard)</label>
+              <br>
+              <input name="showClipWPC" type="number" readonly 
+              placeholder="Get clipboard Wrong Password Attempt Count here" class="listObj" id="showClipWPC"></input>
+              <br><br>
+
+              <label for="showClipMWPC" class = "listObj">The clipboard allows wrong password attempts for 
+                the following number of times: (will show 
+                0 if the max Wrong Password count limit value is set to unlimited i.e., 0 has been entered for this field 
+                while creating the clipboard)</label>
+              <br>
+              <input name="showClipMWPC" type="number" readonly 
+              placeholder="Get clipboard Max Wrong Password Attempt Count here" class="listObj" id="showClipMWPC"></input>
+              <br><br>
+
+              <label for="showClipUC" class = "listObj">The clipboard has been updated for 
+                the following number of times: </label>
+              <br>
+              <input name="showClipUC" type="number" readonly 
+              placeholder="Get clipboard Update Count here" class="listObj" id="showClipUC"></input>
+              <br><br>
+
+              <label for="showClipMUC" class = "listObj">The clipboard can be updated only for a maximum of 
+                the following number of times: </label>
+              <br>
+              <input name="showClipMUC" type="number" readonly 
+              placeholder="Get clipboard Max Update Count here" class="listObj" id="showClipMUC"></input>
+              <br><br>
+
+              <label for="showClipRID" class = "listObj">The Revoke ID is: </label>
+              <br>
+              <input name="showClipRID" type="number" readonly 
+              placeholder="Get Revoke ID of the clipboard here" class="listObj" id="showClipRID"></input>
+              <br><br>
+
+              <label for="showClipOID" class = "listObj">The Owner ID is:</label>
+              <br>
+              <input name="showClipOID" type="number" readonly 
+              placeholder="Get Owner ID of the clipboard here" class="listObj" id="showClipOID"></input>
+              <br><br>
+              <hr class="line">
+              <div class="divSecHead">
+                  <span class="secHead">Links</span>
+              </div>
+              <hr class="line">
+              <br>
+              <span class="heading">Send Feedback to the developer:</span>
+              <button class="actionObj" id="feedback5" onclick="window.location.href='/feedback';">Send Feedback</button>
+              <br>
+              <span class="heading">See the source code of this website:</span>
+              <button class="actionObj" id="code5" onclick="window.location.href='https://github.com/tharela-1/Secure-Online-Clipboard';">
+                  Source Code</button>
+              <br>
+              <span class="heading">Go back to the Welcome Page:</span>
+              <button class="actionObj" id="welcome5" onclick="window.location.href='/welcome';">Welcome Page</button>
+              <br><br>
+              <span class="heading">By using this website you agree to the 
+                  <a href="/help">Privacy Policy</a>, the <a href="/help">Terms of Service</a> and the <a href="/help">License Terms</a> 
+                  of it.</span>
+              <br><br>
+            </div>
+        </div>
     <script src="script.js"></script>
 </body>
 </html>

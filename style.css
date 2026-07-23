@@ -94,6 +94,9 @@ body{
     #copy3:hover{
         background-color: yellow;
     }
+    #copy4:hover{
+        background-color: yellow;
+    }
     #feedback1:hover{
         background-color: lightblue;
     }
@@ -106,6 +109,13 @@ body{
     }
     #revokeCode{
         color: red;
+    }
+    #ownerCode{
+        color: blue;
+    }
+    #owner-button:hover{
+      background-color: blue;
+      color: white;
     }
     .welcomeText{
         font-family: monospace;
@@ -241,6 +251,52 @@ body{
         background-color: green;
         color: white;
     }
+    #code4{
+        font-size: 16px;
+        font-family: monospace;
+    }
+    #code4:hover{
+        background-color: purple;
+        color: white;
+    }
+    #welcome4{
+        font-size: 16px;
+        font-family: monospace;
+    }
+    #welcome4:hover{
+        background-color: lightblue;
+    }
+    #feedback4{
+        font-size: 16px;
+        font-family: monospace;
+    }
+    #feedback4:hover{
+        background-color: green;
+        color: white;
+    }
+    #code5{
+        font-size: 16px;
+        font-family: monospace;
+    }
+    #code5:hover{
+        background-color: purple;
+        color: white;
+    }
+    #welcome5{
+        font-size: 16px;
+        font-family: monospace;
+    }
+    #welcome5:hover{
+        background-color: lightblue;
+    }
+    #feedback5{
+        font-size: 16px;
+        font-family: monospace;
+    }
+    #feedback5:hover{
+        background-color: green;
+        color: white;
+    }
     #revoke-button:hover{
       background-color: red;
       color: white;
@@ -301,6 +357,10 @@ body{
         background-color: orangered;
         color: white;
     }
+     #showPwd4:hover{
+        background-color: orangered;
+        color: white;
+    }
     #senderSectionComponent{
         display: block;
     }
@@ -309,6 +369,15 @@ body{
     }
     #revokeSectionComponent{
         display: none;
+    }
+    #ownerSectionComponent{
+      display: none;
+    }
+    #loginSectionComponent{
+      display: none;
+    }
+    #resultSectionComponent{
+      display: none;
     }
     .tabs{
         display: flex;
@@ -332,6 +401,24 @@ body{
         font-size: 16px;
         font-family: monospace;
     }
+    #ownerTab{
+        width: 100px;
+        height: 50px;
+        font-size: 16px;
+        font-family: monospace;
+    }
+    #loginTab{
+        width: 100px;
+        height: 50px;
+        font-size: 16px;
+        font-family: monospace;
+    }
+    #resultTab{
+        width: 100px;
+        height: 50px;
+        font-size: 16px;
+        font-family: monospace;
+    }
     #showPwd1{
         width: 130px;
     }
@@ -339,6 +426,9 @@ body{
         width: 130px;
     }
     #showPwd3{
+        width: 130px;
+    }
+    #showPwd4{
         width: 130px;
     }
     #recommend-me-button:hover{

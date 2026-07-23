@@ -70,6 +70,22 @@ async function copyFn3(){
         alert("Failed to copy:"+err)
     }
 }
+async function copyFn4(){
+    let op = document.getElementById("ownerCode")
+    let val = op.value
+    try{
+        await navigator.clipboard.writeText(val)
+        let button = document.getElementById('copy4')
+        button.textContent = "Copied!"
+
+        setTimeout( () => {
+            button.textContent = "Copy Revoke ID"
+        }, 2500)
+    }
+    catch(err){
+        alert("Failed to copy:"+err)
+    }
+}
 // Send Feedback to the developer -- Feedback Page Interface with Node.js
 async function sendFeedback(event){
   // If internet failed need try catch block
@@ -139,11 +155,13 @@ only white spaces.")
         })
         const sCode = document.getElementById("sendCode")
         const rCode = document.getElementById("revokeCode")
+        const ocode = document.getElementById("ownerCode")
         let value = await response.text()
         if(response.ok){
           let valArray = value.split(" ")
             sCode.value = valArray[0]
             rCode.value = valArray[1]
+            ocode.value = valArray[2]
             alert("Data sent successfully!!!\nThank you for using this website!")
         }
         else if(response.status===413){
@@ -323,30 +341,107 @@ function showPassword3(){
     }, 5500)
 }
 
+function showPassword4(){
+    let button = document.getElementById("showPwd4")
+    let sendPwd = document.getElementById("clipPass3")
+
+    if(button.textContent === "See Now"){
+        return
+    }
+    sendPwd.type = "text"
+    button.textContent = "See Now"
+    sendPwd.disabled = true;
+    setTimeout( ()=> {
+        sendPwd.type = "password"
+        button.textContent = "Show Password"
+        sendPwd.disabled = false;
+    }, 5500)
+}
+
 // Function for Tab Concept -- Show sender, receiver or revoke tab at one time
 function showSenderSection(){
     let ssec = document.getElementById("senderSectionComponent")
     let rsec = document.getElementById("receiverSectionComponent")
     let revsec = document.getElementById("revokeSectionComponent")
+    let osec = document.getElementById("ownerSectionComponent")
+    let lsec = document.getElementById("loginSectionComponent")
+    let ressec = document.getElementById("resultSectionComponent")
     ssec.style.display = "block"
     rsec.style.display = "none"
     revsec.style.display = "none"
+    osec.style.display = "none"
+    lsec.style.display = "none"
+    ressec.style.display = "none"
 }
 function showReceiverSection(){
     let ssec = document.getElementById("senderSectionComponent")
     let rsec = document.getElementById("receiverSectionComponent")
     let revsec = document.getElementById("revokeSectionComponent")
+    let osec = document.getElementById("ownerSectionComponent")
+    let lsec = document.getElementById("loginSectionComponent")
+    let ressec = document.getElementById("resultSectionComponent")
     ssec.style.display = "none"
     rsec.style.display = "block"
     revsec.style.display = "none"
+    osec.style.display = "none"
+    lsec.style.display = "none"
+    ressec.style.display = "none"
 }
 function showRevokeSection(){
     let ssec = document.getElementById("senderSectionComponent")
     let rsec = document.getElementById("receiverSectionComponent")
     let revsec = document.getElementById("revokeSectionComponent")
+    let osec = document.getElementById("ownerSectionComponent")
+    let lsec = document.getElementById("loginSectionComponent")
+    let ressec = document.getElementById("resultSectionComponent")
     ssec.style.display = "none"
     rsec.style.display = "none"
     revsec.style.display = "block"
+    osec.style.display = "none"
+    lsec.style.display = "none"
+    ressec.style.display = "none"
+}
+function showOwnerSection(){
+    let ssec = document.getElementById("senderSectionComponent")
+    let rsec = document.getElementById("receiverSectionComponent")
+    let revsec = document.getElementById("revokeSectionComponent")
+    let osec = document.getElementById("ownerSectionComponent")
+    let lsec = document.getElementById("loginSectionComponent")
+    let ressec = document.getElementById("resultSectionComponent")
+    ssec.style.display = "none"
+    rsec.style.display = "none"
+    revsec.style.display = "none"
+    osec.style.display = "block"
+    lsec.style.display = "block"
+    ressec.style.display = "none"
+}
+function showLoginSection(){
+    let ssec = document.getElementById("senderSectionComponent")
+    let rsec = document.getElementById("receiverSectionComponent")
+    let revsec = document.getElementById("revokeSectionComponent")
+    let osec = document.getElementById("ownerSectionComponent")
+    let lsec = document.getElementById("loginSectionComponent")
+    let ressec = document.getElementById("resultSectionComponent")
+    ssec.style.display = "none"
+    rsec.style.display = "none"
+    revsec.style.display = "none"
+    osec.style.display = "block"
+    lsec.style.display = "block"
+    ressec.style.display = "none"
+}
+function showResultSection(){
+    let ssec = document.getElementById("senderSectionComponent")
+    let rsec = document.getElementById("receiverSectionComponent")
+    let revsec = document.getElementById("revokeSectionComponent")
+    let osec = document.getElementById("ownerSectionComponent")
+    let lsec = document.getElementById("loginSectionComponent")
+    let ressec = document.getElementById("resultSectionComponent")
+    ssec.style.display = "none"
+    rsec.style.display = "none"
+    revsec.style.display = "none"
+    osec.style.display = "block"
+    lsec.style.display = "none"
+    ressec.style.display = "block"
 }
 // Update clipboard function
 async function updateClipboard(){
@@ -375,7 +470,7 @@ Thanks for using this website!!")
     }
     else{
         alert("Update Failed.\n\
-The update limit may be exhausted or the clipboard ID might have been set read-only or the clipboard ID may not exist.")
+The update limit may be exhausted or the clipboard ID might have been set as read-only or the clipboard ID may not exist.")
     }
   }
   catch(err){
@@ -667,6 +762,101 @@ async function revokeClipBoard(event){
     }
     else{
       alert("Clipboard Deletion Failed!!")
+    }
+  }
+  catch(err){
+    alert("Network error! Please Check your internet connection!")
+  }
+}
+
+// Implementation of Owner Dashboard feature
+async function ownerOfClipBoard(event){
+  try{
+    event.preventDefault()
+    let ssec = document.getElementById("senderSectionComponent")
+    let rsec = document.getElementById("receiverSectionComponent")
+    let revsec = document.getElementById("revokeSectionComponent")
+    let osec = document.getElementById("ownerSectionComponent")
+    let lsec = document.getElementById("loginSectionComponent")
+    let ressec = document.getElementById("resultSectionComponent")
+    ssec.style.display = "none"
+    rsec.style.display = "none"
+    revsec.style.display = "none"
+    osec.style.display = "block"
+    lsec.style.display = "block"
+    ressec.style.display = "none"
+
+    // Now get the input values
+    const clipID = document.getElementById("clipID3").value
+    const clipPass = document.getElementById("clipPass3").value
+    const ownerID = document.getElementById("ownerID").value
+
+    const response = await fetch("/getOwnerDetails", {
+      method: "POST",
+      headers: {'Content-Type':'application/x-www-form-urlencoded'},
+      body: `clipID=${encodeURIComponent(clipID)}&clipPass=${encodeURIComponent(clipPass)}&ownerID=${encodeURIComponent(ownerID)}`
+    })
+    if(response.ok){
+
+      const jsonDoc = await response.json() // using .json() because what we get is a stringified JSON document
+
+      // Changing the Tab Layouts
+
+      ssec.style.display = "none"
+      rsec.style.display = "none"
+      revsec.style.display = "none"
+      osec.style.display = "block"
+      lsec.style.display = "none"
+      ressec.style.display = "block"
+
+      // Get the output fields now
+      let showClipID = document.getElementById("showClipID")
+      let showClipMsg = document.getElementById("showClipMsg")
+      let showClipTTL = document.getElementById("showClipTTL")
+      let showClipDate = document.getElementById("showClipDate")
+      let showClipRC = document.getElementById("showClipRC")
+      let showClipMRC = document.getElementById("showClipMRC")
+      let showClipWPC = document.getElementById("showClipWPC")
+      let showClipMWPC = document.getElementById("showClipMWPC")
+      let showClipUC = document.getElementById("showClipUC")
+      let showClipMUC = document.getElementById("showClipMUC")
+      let showClipRID = document.getElementById("showClipRID")
+      let showClipOID = document.getElementById("showClipOID")
+
+      // Put the values now
+      showClipID.value = jsonDoc.clipBoardID
+      showClipMsg.value = jsonDoc.message
+      showClipTTL.value = jsonDoc.expireSeconds
+      showClipDate.value = jsonDoc.expiresAt
+      showClipRC.value = jsonDoc.readCount
+      showClipMRC.value = jsonDoc.maxReadCount
+      showClipWPC.value = jsonDoc.wrongPwdCount
+      showClipMWPC.value = jsonDoc.maxWrongPwdCount
+      showClipUC.value = jsonDoc.updateCount
+      showClipMUC.value = jsonDoc.maxUpdateLimit
+      showClipRID.value = jsonDoc.revokeID
+      showClipOID.value = jsonDoc.ownerID
+    }
+    else{
+      if(response.status === 400){
+        alert("Check your inputs and try again. Credentials may be invalid also. Your clipboard might have got deleted.")
+      }
+      else if(response.status === 413){
+        alert("Check your inputs and try again. Credentials may be invalid also. Your clipboard might have got deleted.")
+      }
+      else if(response.status === 404){
+        alert("Check your inputs and try again. Credentials may be invalid also. Your clipboard might have got deleted.")
+      }
+      else if(response.status === 429){
+        alert("Check your inputs and try again. Credentials may be invalid also. Your clipboard might have got deleted.")
+      }
+      else if(response.status === 500){
+        alert("Error 500 - Internal System Error\nPlease try again after some time.\n\
+If issue persists, then send feedback to the developer.")
+      }
+      else{
+        alert("Some error occurred. Check your inputs or wait for some time and try again.")
+      }
     }
   }
   catch(err){
