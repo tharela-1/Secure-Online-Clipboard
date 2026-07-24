@@ -439,6 +439,21 @@ body{
       font-family: monospace;
       font-size: 16px;
     }
+    #showClipID{
+      color: green;
+    }
+    #showClipTTL{
+      color: green;
+    }
+    #showClipDate{
+      color: green;
+    }
+    #showClipRID{
+      color: red;
+    }
+    #showClipOID{
+      color: blue;
+    }
     /*Disables the password view eye symbol from Microsoft Edge and Internet Explorer*/
     input::-ms-reveal{
         display: none;
