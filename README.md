@@ -8,7 +8,7 @@ Database Used: MongoDB Atlas
 Deployment: This website is deployed on Railway.  
 Deployment URL: https://secure-online-clipboard-production.up.railway.app/  
 
-Project Timeline: May 14, 2026 - Jul 24, 2026 (for version 1.5.0)  
+Project Timeline: May 14, 2026 - Jul 25, 2026 (for version 1.5.1)  
 
 # Features:
 1. Each clipboard has a unique 12 - digit ID
@@ -34,7 +34,7 @@ Project Timeline: May 14, 2026 - Jul 24, 2026 (for version 1.5.0)
 21. Layered Heuristic based Recommendation feature has been added in the sender section to give recommended values for the users for the TTL, maximum Read count, maximum wrong password count and maximum update count. Users can edit the recommended values as well according to their needs.
 22. Instant deletion of the clipboard feature has been given to let the users delete their clipboard immediately by using their clipboard ID, password and revoke ID. Race conditions in Revoke operations has been handled by using the atomic operations like findOneAndDelete().
 23. Users will get alert messages when the user's internet get disconnected and presses any button that involves connection with the database.
-24. The owner of the clipboard can see the message and the meta data of the website by going to the owner tab and entering the clipboard ID, password and owner ID. If all these are found to be correct then the owner can see the message and meta data of the clipboard but not password and encryption related details. Here also the race condition has been handled for wrong password attempts using MongoDB atomic operations findOneAndUpdate().
+24. The owner of the clipboard can see the message and the meta data of the website by going to the owner tab and entering the clipboard ID, password and owner ID. If all these are found to be correct then the owner can see the message and meta data of the clipboard but not password and encryption related details. Here also the race condition has been handled for wrong password attempts using MongoDB atomic operations findOneAndUpdate(). Necessary backend TTL validation has been done in the Owner section to the make the expired clipboard accessible even if it takes some time for the expired document to get deleted from the database.
 
 # Versions:
 *Ver 1.0.0*: It is the basic version of the project. Only some of the features listed above are implemented. But user has to calculate the TTL in seconds and enter it. Users can enter upto 1000 characters per clipboard.  
@@ -66,6 +66,8 @@ Project Timeline: May 14, 2026 - Jul 24, 2026 (for version 1.5.0)
 *Ver 1.4.1*: This is the fourteenth version of this project. In this version, the issue of silent failing of the website when the user's internet get disconnected and presses any button that involves connection with the database has been resolved. Server selection Timeout and connect Timeout have been set at a limit of 7500 ms i.e., 7.5 sec. This is to prevent prolonged waits when the database is not reachable.  
 
 *Ver 1.5.0*: This is the fifteenth version of this project. In this version, a new feature of owner managing message and meta data has been added. i.e., whenever a clipboard is created here after the user gets 3 IDs. One is the clipboard ID, the second is the revoke ID and the third is the owner ID. The owner can see all the details of the clipboard except the password and the encryption data stored like authTag, iv etc., but he can see all the details related to the message, TTL, read count, wrong password attempt count, update count and revoke id details. Also the wrong password attempts if any done to see the owner's details that are also counted towards wrong password attempts. This is applicable only if clipboard ID and the owner ID both are found to be correct. Race conditions have been handled in the wrong password attempt count using MongoDB atomic operattions findOneAndUpdate(). The owner can only view the message and the meta data of the clipboard by using the Owner Tab.  
+
+*Ver 1.5.1*: This is the sixteenth version of the project. In this version, backend TTL validation in Owner Section also has been implemented i.e., if the clipboard has got expired then the data won't be accessible even if it takes some time for the expired document to get deleted from the database.  
 
 # Limitations:
 1. Race conditions have not been handled for wrong password count during the update operations.
