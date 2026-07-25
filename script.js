@@ -841,6 +841,9 @@ async function ownerOfClipBoard(event){
       if(response.status === 400){
         alert("Check your inputs and try again. Credentials may be invalid also. Your clipboard might have got deleted.")
       }
+      else if(response.status === 410){
+        alert("Check your inputs and try again. Credentials may be invalid also. Your clipboard might have got deleted.")
+      }
       else if(response.status === 413){
         alert("Check your inputs and try again. Credentials may be invalid also. Your clipboard might have got deleted.")
       }

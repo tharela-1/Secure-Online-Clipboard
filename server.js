@@ -660,6 +660,12 @@ async function connectDB(){
                       // Check whether the document exists with the clipboard id
                       let rec = await cb.findOne({clipBoardID: Number(clipID)})
                       if(rec){
+                        if(Date.now()>rec.expiresAt){
+                          // Record is there but TTL has been expired
+                          res.writeHead(410,{"Content-Type":"text/plain"})
+                          res.end()
+                          return
+                        }
                         if(Number(ownerID) === rec.ownerID){
                           // owner ID matched
                           let matchCheck = await bcrypt.compare(clipPass, rec.password)
