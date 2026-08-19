@@ -84,7 +84,6 @@ function msgEncryption(message, randomIndex, ivBuffer){
 async function connectDB(){
     try{
         await MongoClient.connect()
-        console.log("Connected successfully")
 
         const db = MongoClient.db("Feedback")
         const fb = db.collection("feedback")
@@ -251,7 +250,6 @@ async function connectDB(){
                             }
                             catch(err){
                               if(err.code===11000){
-                                console.log("Retrying...")
                               }
                               else{
                                 res.writeHead(500, {"Content-Type":"text/plain"})
@@ -392,7 +390,6 @@ async function connectDB(){
                                     }   
                                 }
                                 catch(err){
-                                    console.log(err)
                                     res.writeHead(500, 'text/plain')
                                     res.end()
                                     return
@@ -760,11 +757,11 @@ async function connectDB(){
                 fs.createReadStream('./pageNotFound.html').pipe(res)
             }
         }).listen(process.env.PORT, '0.0.0.0', ()=>{
-            console.log("Server is listening")
+        
         })
     }
     catch(err){
-        console.log("Connection error: "+err)
+      
     }
 }
 
