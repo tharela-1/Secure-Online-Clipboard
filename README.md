@@ -8,7 +8,7 @@ Database Used: MongoDB Atlas
 Deployment: This website is deployed on Railway.  
 Deployment URL: https://secure-online-clipboard-production.up.railway.app/  
 
-Project Timeline: May 14, 2026 - Jul 25, 2026 (for version 1.5.1)  
+Project Timeline: May 14, 2026 - Aug 23, 2026 (for version 1.5.2)  
 
 # Features:
 1. Each clipboard has a unique 12 - digit ID
@@ -68,6 +68,8 @@ Project Timeline: May 14, 2026 - Jul 25, 2026 (for version 1.5.1)
 *Ver 1.5.0*: This is the fifteenth version of this project. In this version, a new feature of owner managing message and meta data has been added. i.e., whenever a clipboard is created here after the user gets 3 IDs. One is the clipboard ID, the second is the revoke ID and the third is the owner ID. The owner can see all the details of the clipboard except the password and the encryption data stored like authTag, iv etc., but he can see all the details related to the message, TTL, read count, wrong password attempt count, update count and revoke id details. Also the wrong password attempts if any done to see the owner's details that are also counted towards wrong password attempts. This is applicable only if clipboard ID and the owner ID both are found to be correct. Race conditions have been handled in the wrong password attempt count using MongoDB atomic operattions findOneAndUpdate(). The owner can only view the message and the meta data of the clipboard by using the Owner Tab.  
 
 *Ver 1.5.1*: This is the sixteenth version of the project. In this version, backend TTL validation in Owner Section also has been implemented i.e., if the clipboard has got expired then the data won't be accessible even if it takes some time for the expired document to get deleted from the database.  
+
+*Ver 1.5.2:* This is the seventeenth version of this project. In this version, the backend validation of the message sent in feedback is done better and now it does not acccept any empty string or string that contains only whitespaces. There must be atleast one non-space character to send the feedback message.
 
 # Limitations:
 1. Race conditions have not been handled for wrong password count during the update operations.
