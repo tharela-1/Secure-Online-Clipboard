@@ -153,6 +153,11 @@ async function connectDB(){
                         res.end()
                         return
                     }
+                    else if(data.feedback.trim().length<=0){
+                        res.writeHead(400, {"Content-Type":"text/plain"})
+                        res.end()
+                        return
+                    }
                     else{
                         await fb.insertOne({
                             feedback: data.feedback

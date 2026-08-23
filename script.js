@@ -93,25 +93,36 @@ async function sendFeedback(event){
       event.preventDefault();  
       const fdb = document.getElementById('feedback')
       let value = fdb.value
-      
-      const response = await fetch('/sendFeedback', {
-          method: "POST",
-          headers: {
-              'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          body: `feedback=${encodeURIComponent(value)}`
-      })
-      if(response.ok){
-          alert("Feedback sent successfully! Thank you for your valuable feedback!")
-          fdb.value = ""
-      }
-      else if(response.status === 500){
-        // To handle if DB is unavailable
-        alert("Error 500 - Some DB or Server error might have occurred. Please try later.\
-\nAlso please check your internet connection!")
+      let trimVal = fdb.value.trim()
+      if(trimVal.length<=0){
+        alert("Feedback string can't be empty and it can't contain only whitespaces.\n\
+There must be atleast 1 non-space character to send feedback.")
       }
       else{
-          alert("Error 413 - Payload Too Large")
+        const response = await fetch('/sendFeedback', {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: `feedback=${encodeURIComponent(value)}`
+        })
+        if(response.ok){
+            alert("Feedback sent successfully! Thank you for your valuable feedback!")
+            fdb.value = ""
+        }
+        else if(response.status === 500){
+          // To handle if DB is unavailable
+          alert("Error 500 - Some DB or Server error might have occurred. Please try later.\
+  \nAlso please check your internet connection!")
+        }
+        else if(response.status === 400){
+          alert("Error 400 - Bad Request\n\
+Feedback string can't be empty and it can't contain only whitespaces.\n\
+There must be atleast 1 non-space character to send feedback.")
+        }
+        else{
+            alert("Error 413 - Payload Too Large")
+        }
       }
     }
     catch(err){
